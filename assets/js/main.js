@@ -4,8 +4,6 @@ import "babel-polyfill";
 import * as PIXI from "pixi.js";
 window.PIXI = PIXI;
 
-require("pixi-layers");
-
 Array.prototype.getRandomValue = inputArray => {
   return inputArray[Math.floor(Math.random() * inputArray.length)];
 };
@@ -41,6 +39,7 @@ document.addEventListener("DOMContentLoaded", function() {
       this.run = run;
       const pixiObj = new PIXI.Sprite(texture);
       this.texture = texture;
+      pixiObj.scale.set(Math.random() * 0.4 + 0.4);
 
       this.pixiObj = pixiObj;
       this.maxFramesFly = 4;
@@ -48,6 +47,7 @@ document.addEventListener("DOMContentLoaded", function() {
       this.df = this.maxFramesFly; // images per seconds
       pixiObj.zOrder = 2;
       pixiObj.zIndex = 2;
+
       this.dead = false;
       this.directions = {
         x: 1,
@@ -57,7 +57,6 @@ document.addEventListener("DOMContentLoaded", function() {
       pixiObj.anchor.x = 0.5;
       pixiObj.anchor.y = 0.5;
 
-      pixiObj.scale.set(Math.random() * 0.3 + 0.85);
       this.setInitialPositionY();
       this.setInitialPositionX();
       pixiObj.interactive = true;
@@ -67,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     setInitialPositionY = () => {
       this.pixiObj.y =
-        (window.innerHeight - this.pixiObj.height * 2) * Math.random() +
+        (window.innerHeight - window.innerHeight * 0.4) * Math.random() +
         this.pixiObj.height / 2;
     };
 
@@ -84,13 +83,15 @@ document.addEventListener("DOMContentLoaded", function() {
       if (this.dead == false) {
         if (this.pixiObj.x - this.pixiObj.width / 2 >= window.innerWidth) {
           this.directions.x = false;
-          this.pixiObj.scale.x = -1;
+          this.setInitialPositionY();
+          this.pixiObj.scale.x *= -1;
         } else if (
           this.pixiObj.x - this.pixiObj.width / 2 <=
           0 - this.pixiObj.width
         ) {
           this.directions.x = true;
-          this.pixiObj.scale.x = 1;
+          this.setInitialPositionY();
+          this.pixiObj.scale.x *= -1;
         }
         if (this.directions.x) {
           this.pixiObj.x += this.speed;
@@ -138,7 +139,6 @@ document.addEventListener("DOMContentLoaded", function() {
   class Game {
     constructor() {
       this.canvas = document.getElementById("canvas");
-      this.layer = new PIXI.display.Layer();
       renderer = new PIXI.Renderer({
         view: this.canvas,
         width: window.innerWidth,
@@ -180,7 +180,6 @@ document.addEventListener("DOMContentLoaded", function() {
       landscape.height = window.innerHeight;
       landscape.position.x = 0;
       landscape.position.y = 0;
-      landscape.parentLayer = this.layer;
       this.stage.addChildAt(landscape, 0);
       this.landscape = landscape;
     };
@@ -195,7 +194,6 @@ document.addEventListener("DOMContentLoaded", function() {
       landscapeFront.height = window.innerHeight;
       landscapeFront.position.x = window.innerHeight - landscapeFront.height;
       landscapeFront.position.y = 0;
-      landscapeFront.parentLayer = this.layer;
       this.stage.addChildAt(landscapeFront, 7);
       this.landscapeFront = landscapeFront;
     };
