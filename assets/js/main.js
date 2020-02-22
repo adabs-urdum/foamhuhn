@@ -12,7 +12,11 @@ document.addEventListener("DOMContentLoaded", function() {
   let renderer;
   let stage;
   let loader;
-  const targets = [];
+  let spawnedTargets = 0;
+  let successfulShots = 0;
+  let targets = [];
+  let isRunning = true;
+  const scoreboard = {};
   const gravity = 20;
 
   class Target {
@@ -20,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function() {
       let resources = loader.resources;
 
       const run = [];
-      const textures = ["bird1", "bird2", "bird3", "bird4"];
+      const textures = ["bird1", "bird2", "bird3", "bird4", "bird5"];
       const texture = loader.resources[
         textures.getRandomValue(textures)
       ].texture.clone();
@@ -110,6 +114,11 @@ document.addEventListener("DOMContentLoaded", function() {
           this.pixiObj.y += gravity;
         } else {
           stage.removeChild(this.pixiObj);
+          targets = targets.filter(target => {
+            if (target._id != this._id) {
+              return target;
+            }
+          });
         }
       }
     };
@@ -124,14 +133,17 @@ document.addEventListener("DOMContentLoaded", function() {
 
     onClick = e => {
       this.dead = true;
+      successfulShots += 1;
       this.texture.frame = this.run[8];
       this.flipVertical();
       this.pixiObj.off("pointerdown", this.onClick);
 
       if (Math.round(Math.random())) {
         const target = new Target();
-        stage.addChildAt(target.pixiObj, 1);
+        stage.addChildAt(target.pixiObj, 2);
         targets.push(target);
+        spawnedTargets += 1;
+        target._id = spawnedTargets;
       }
     };
   }
@@ -194,15 +206,14 @@ document.addEventListener("DOMContentLoaded", function() {
       landscapeFront.height = window.innerHeight;
       landscapeFront.position.x = window.innerHeight - landscapeFront.height;
       landscapeFront.position.y = 0;
-      this.stage.addChildAt(landscapeFront, 7);
+      this.stage.addChildAt(landscapeFront, 5);
       this.landscapeFront = landscapeFront;
     };
 
     preloadReady = () => {
       this.addBackground();
 
-      this.targets = targets;
-      this.targets.push(
+      targets.push(
         new Target(),
         new Target(),
         new Target(),
@@ -210,21 +221,70 @@ document.addEventListener("DOMContentLoaded", function() {
         new Target(),
         new Target()
       );
-      this.targets.map(target => {
+      targets.map(target => {
+        spawnedTargets += 1;
+        target._id = spawnedTargets;
         this.stage.addChildAt(target.pixiObj, 1);
       });
 
       this.addBackgroundFront();
+      this.addScoreBoard();
 
-      setInterval(() => {
+      this.spawnInterval = setInterval(() => {
         const target = new Target();
-        this.stage.addChildAt(target.pixiObj, 1);
-        this.targets.push(target);
+        this.stage.addChildAt(target.pixiObj, 2);
+        spawnedTargets += 1;
+        target._id = spawnedTargets;
+        targets.push(target);
       }, 2000);
 
       this.ticker = new PIXI.Ticker();
       this.ticker.add(this.animate);
       this.ticker.start();
+    };
+
+    addScoreBoard = () => {
+      let flying = new PIXI.Text(targets.length, {
+        fontFamily: "Arial Black",
+        fontSize: 200,
+        fill: 0xe9e9e9,
+        align: "center"
+      });
+      flying.anchor.set(0.5);
+      flying.position.set(window.innerWidth / 2, window.innerHeight / 4);
+      this.stage.addChildAt(flying, 1);
+
+      let total = new PIXI.Text("/" + spawnedTargets, {
+        fontFamily: "Arial Black",
+        fontSize: 100,
+        fill: 0x374754,
+        align: "center"
+      });
+      this.stage.addChildAt(total, 7);
+      total.anchor.set(0, 0.5);
+      total.position.set(
+        window.innerWidth - total.width - 80,
+        window.innerHeight - total.height
+      );
+      this.stage.addChildAt(total, 7);
+
+      let dead = new PIXI.Text(successfulShots, {
+        fontFamily: "Arial Black",
+        fontSize: 100,
+        fill: 0x1a2127,
+        align: "center"
+      });
+      this.stage.addChildAt(dead, 7);
+      dead.anchor.set(0, 0.5);
+      dead.position.set(
+        window.innerWidth - total.width - dead.width - 80,
+        window.innerHeight - dead.height
+      );
+      this.stage.addChildAt(dead, 7);
+
+      scoreboard["total"] = total;
+      scoreboard["dead"] = dead;
+      scoreboard["flying"] = flying;
     };
 
     preloadAssets = () => {
@@ -237,6 +297,7 @@ document.addEventListener("DOMContentLoaded", function() {
       loader.add("bird2", "./dist/img/birds/spreadFly2.png");
       loader.add("bird3", "./dist/img/birds/spreadFly3.png");
       loader.add("bird4", "./dist/img/birds/spreadFly4.png");
+      loader.add("bird5", "./dist/img/birds/spreadFly5.png");
 
       loader.load();
 
@@ -248,9 +309,27 @@ document.addEventListener("DOMContentLoaded", function() {
     };
 
     animate = () => {
-      this.targets.map(target => {
+      targets.map(target => {
         target.fly();
       });
+
+      scoreboard.flying.text = targets.length;
+      scoreboard.dead.text = successfulShots;
+      scoreboard.total.text = "/" + spawnedTargets;
+      scoreboard.flying.position.set(
+        window.innerWidth / 2,
+        window.innerHeight / 4
+      );
+      scoreboard.total.position.x =
+        window.innerWidth - scoreboard.total.width - 80;
+      scoreboard.dead.position.x = scoreboard.total.x - scoreboard.dead.width;
+
+      if (!targets.length) {
+        clearInterval(this.spawnInterval);
+        scoreboard.flying.text = "YOU WIN";
+        scoreboard.flying.style.fontSize = 150;
+      }
+
       this.renderer.render(this.stage);
     };
   }
