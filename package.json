@@ -42,7 +42,8 @@
     "babylonjs-materials": "latest",
     "esbuild-darwin-64": "latest",
     "pixi.js": "latest",
-    "pixi-layers": "latest"
+    "pixi-layers": "latest",
+    "webfontloader": "latest"
   },
   "dependencies": {
     "pixi": "^0.3.1"
