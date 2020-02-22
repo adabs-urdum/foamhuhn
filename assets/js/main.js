@@ -4,6 +4,7 @@ import "babel-polyfill";
 import WebFont from "webfontloader";
 import * as PIXI from "pixi.js";
 import Bird from "./characters/bird.js";
+import Level from "./stages/level.js";
 import StartScreen from "./stages/startScreen.js";
 window.PIXI = PIXI;
 
@@ -13,6 +14,8 @@ Array.prototype.getRandomValue = inputArray => {
 
 document.addEventListener("DOMContentLoaded", function() {
   const setup = {
+    fontFamily: "Sedgwick Ave Display",
+    messageDuration: 2000,
     designWidth: 1920,
     BS: window.innerWidth / 1920,
     renderer: null,
@@ -23,11 +26,12 @@ document.addEventListener("DOMContentLoaded", function() {
     targets: [],
     isRunning: true,
     scoreboard: {},
-    gravity: 20,
+    gravity: 17,
+    displayTextDuration: 2000,
     currentStage: null,
-    currentStageId: null,
     currentStageChanged: true,
-    stages: ["start", "level-1"]
+    stages: ["start", "level-1"],
+    currentStageId: "level-1"
   };
 
   class Game {
@@ -100,81 +104,20 @@ document.addEventListener("DOMContentLoaded", function() {
       this.landscapeFront = landscapeFront;
     };
 
+    resetStage = () => {
+      for (var i = setup.stage.children.length - 1; i >= 0; i--) {
+        setup.stage.removeChild(setup.stage.children[i]);
+      }
+      this.addBackground();
+      this.addBackgroundFront();
+    };
+
     preloadReady = () => {
       this.addBackground();
-
-      // setup.targets.push(
-      //   new Bird(setup),
-      //   new Bird(setup),
-      //   new Bird(setup),
-      //   new Bird(setup),
-      //   new Bird(setup),
-      //   new Bird(setup)
-      // );
-      // setup.targets.map(target => {
-      //   setup.spawnedTargets += 1;
-      //   target._id = setup.spawnedTargets;
-      //   setup.stage.addChildAt(target.pixiObj, 1);
-      // });
-
-      // this.addBackgroundFront();
-      // this.addScoreBoard();
-
-      // this.spawnInterval = setInterval(() => {
-      //   const target = new Bird(setup);
-      //   setup.stage.addChildAt(target.pixiObj, 2);
-      //   setup.spawnedTargets += 1;
-      //   target._id = setup.spawnedTargets;
-      //   setup.targets.push(target);
-      // }, 2000);
 
       this.ticker = new PIXI.Ticker();
       this.ticker.add(this.animate);
       this.ticker.start();
-    };
-
-    addScoreBoard = () => {
-      let flying = new PIXI.Text(setup.targets.length, {
-        fontFamily: "Arial Black",
-        fontSize: 200,
-        fill: 0xe9e9e9,
-        align: "center"
-      });
-      flying.anchor.set(0.5);
-      flying.position.set(window.innerWidth / 2, window.innerHeight / 4);
-      setup.stage.addChildAt(flying, 1);
-
-      let total = new PIXI.Text("/" + setup.spawnedTargets, {
-        fontFamily: "Arial Black",
-        fontSize: 100,
-        fill: 0x374754,
-        align: "center"
-      });
-      setup.stage.addChildAt(total, 7);
-      total.anchor.set(0, 0.5);
-      total.position.set(
-        window.innerWidth - total.width - 80,
-        window.innerHeight - total.height
-      );
-      setup.stage.addChildAt(total, 7);
-
-      let dead = new PIXI.Text(setup.successfulShots, {
-        fontFamily: "Arial Black",
-        fontSize: 100,
-        fill: 0x1a2127,
-        align: "center"
-      });
-      setup.stage.addChildAt(dead, 7);
-      dead.anchor.set(0, 0.5);
-      dead.position.set(
-        window.innerWidth - total.width - dead.width - 80,
-        window.innerHeight - dead.height
-      );
-      setup.stage.addChildAt(dead, 7);
-
-      setup.scoreboard["total"] = total;
-      setup.scoreboard["dead"] = dead;
-      setup.scoreboard["flying"] = flying;
     };
 
     preloadAssets = () => {
@@ -200,33 +143,31 @@ document.addEventListener("DOMContentLoaded", function() {
     animate = () => {
       if (setup.currentStageChanged) {
         if (setup.currentStageId == "start") {
+          this.resetStage();
           setup.currentStage = new StartScreen(setup);
         } else if (setup.currentStageId == "level-1") {
-          console.log("level-1");
+          this.resetStage();
+          setup.currentStage = new Level(setup, {
+            targetTypes: ["birdYellow"],
+            initialTargetAmount: 10,
+            spawnNew: false,
+            instructionsText: "shoot all birds"
+          });
         } else {
           setup.targets.map(target => {
             target.fly();
           });
-
-          // setup.scoreboard.flying.text = setup.targets.length;
-          // setup.scoreboard.dead.text = setup.successfulShots;
-          // setup.scoreboard.total.text = "/" + setup.spawnedTargets;
-          // setup.scoreboard.flying.position.set(
-          //   window.innerWidth / 2,
-          //   window.innerHeight / 4
-          // );
-          // setup.scoreboard.total.position.x =
-          //   window.innerWidth - setup.scoreboard.total.width - 80;
-          // setup.scoreboard.dead.position.x =
-          //   setup.scoreboard.total.x - setup.scoreboard.dead.width;
-
-          // if (!setup.targets.length) {
-          //   clearInterval(this.spawnInterval);
-          //   setup.scoreboard.flying.text = "YOU WIN";
-          //   setup.scoreboard.flying.style.fontSize = 150;
-          // }
         }
         setup.currentStageChanged = false;
+      }
+
+      if (setup.currentStageId.indexOf("level") >= 0) {
+        if (Object.keys(setup.scoreboard).length) {
+          setup.currentStage.updateScoreBoard();
+        }
+        setup.targets.map(target => {
+          target.fly();
+        });
       }
 
       setup.renderer.render(setup.stage);

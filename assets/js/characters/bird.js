@@ -11,6 +11,8 @@ class Bird {
       "birdGreenBlack",
       "birdWhiteChick"
     ];
+    console.log(setup.loader.resources);
+
     const texture = textureInit
       ? setup.loader.resources[textureInit].texture.clone()
       : setup.loader.resources[
@@ -126,13 +128,13 @@ class Bird {
     this.flipVertical();
     this.pixiObj.off("pointerdown", this.onClick);
 
-    if (Math.round(Math.random())) {
-      const target = new Bird(this.setup);
-      this.setup.stage.addChildAt(target.pixiObj, 2);
-      this.setup.targets.push(target);
-      this.setup.spawnedTargets += 1;
-      target._id = this.setup.spawnedTargets;
-    }
+    // if (Math.round(Math.random())) {
+    //   const target = new Bird(this.setup);
+    //   this.setup.stage.addChildAt(target.pixiObj, 5);
+    //   this.setup.targets.push(target);
+    //   this.setup.spawnedTargets += 1;
+    //   target._id = this.setup.spawnedTargets;
+    // }
   };
 }
 
