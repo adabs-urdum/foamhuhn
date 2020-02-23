@@ -13,9 +13,10 @@ Array.prototype.getRandomValue = inputArray => {
 };
 
 document.addEventListener("DOMContentLoaded", function() {
+  const debug = true;
   const setup = {
     fontFamily: "Sedgwick Ave Display",
-    messageDuration: 2000,
+    messageDuration: 1000,
     designWidth: 1920,
     BS: window.innerWidth / 1920,
     renderer: null,
@@ -24,14 +25,29 @@ document.addEventListener("DOMContentLoaded", function() {
     spawnedTargets: 0,
     successfulShots: 0,
     targets: [],
+    bombs: [],
     isRunning: true,
     scoreboard: {},
-    gravity: 17,
+    gravity: 20,
     displayTextDuration: 2000,
     currentStage: null,
+    totalLifes: 3,
+    lifes: 3,
     currentStageChanged: true,
-    stages: ["start", "level-1"],
-    currentStageId: "level-1"
+    stages: ["start", "level-1", "level-2", "level-3", "level-4"],
+    currentStageId: "level-1",
+    bringToFront: obj => {
+      if (obj) {
+        const parent = obj.parent;
+        parent.removeChild(obj);
+        parent.addChild(obj);
+      }
+    },
+    debugLog: str => {
+      if (debug) {
+        console.log(str);
+      }
+    }
   };
 
   class Game {
@@ -100,7 +116,7 @@ document.addEventListener("DOMContentLoaded", function() {
       for (let i = 1; i <= 10; i++) {
         setup.stage.addChildAt(new PIXI.Graphics(), i);
       }
-      setup.stage.addChildAt(landscapeFront, 11);
+      setup.stage.addChildAt(landscapeFront, 10);
       this.landscapeFront = landscapeFront;
     };
 
@@ -123,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function() {
     preloadAssets = () => {
       const sprites = this.sprites;
       setup.loader
-        .add("moorhuhn", "./dist/img/moorhuhn.png")
+        .add("heart", "./dist/img/heart.png")
         .add("background", "./dist/img/background.jpg")
         .add("backgroundFront", "./dist/img/background_1.png")
         .add("birdRedHat", "./dist/img/birds/spreadFly1.png")
@@ -131,6 +147,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .add("birdPink", "./dist/img/birds/spreadFly3.png")
         .add("birdGreenBlack", "./dist/img/birds/spreadFly4.png")
         .add("birdWhiteChick", "./dist/img/birds/spreadFly5.png")
+        .add("bomb", "./dist/img/traps/bomb.png")
         .load();
 
       // throughout the process multiple signals can be dispatched.
@@ -149,13 +166,43 @@ document.addEventListener("DOMContentLoaded", function() {
           this.resetStage();
           setup.currentStage = new Level(setup, {
             targetTypes: ["birdYellow"],
+            initialTargetAmount: 2,
+            spawnNew: false,
+            instructionsText: "shoot all birds",
+            bombs: 5
+          });
+        } else if (setup.currentStageId == "level-2") {
+          this.resetStage();
+          setup.currentStage = new Level(setup, {
+            targetTypes: ["birdYellow", "birdRedHat"],
+            initialTargetAmount: 5,
+            spawnNew: false,
+            instructionsText: "shoot all birds",
+            bombs: 5
+          });
+        } else if (setup.currentStageId == "level-3") {
+          this.resetStage();
+          setup.currentStage = new Level(setup, {
+            targetTypes: ["birdYellow", "birdRedHat", "birdWhiteChick"],
             initialTargetAmount: 10,
             spawnNew: false,
-            instructionsText: "shoot all birds"
+            instructionsText: "shoot all birds",
+            bombs: 5
           });
-        } else {
-          setup.targets.map(target => {
-            target.fly();
+        } else if (setup.currentStageId == "level-4") {
+          this.resetStage();
+          setup.currentStage = new Level(setup, {
+            targetTypes: [
+              "birdYellow",
+              "birdRedHat",
+              "birdWhiteChick",
+              "birdPink",
+              "birdGreenBlack"
+            ],
+            initialTargetAmount: 20,
+            spawnNew: false,
+            instructionsText: "shoot all birds",
+            bombs: 5
           });
         }
         setup.currentStageChanged = false;
@@ -163,11 +210,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
       if (setup.currentStageId.indexOf("level") >= 0) {
         if (Object.keys(setup.scoreboard).length) {
-          setup.currentStage.updateScoreBoard();
+          setup.currentStage.updateLevel();
         }
-        setup.targets.map(target => {
-          target.fly();
-        });
       }
 
       setup.renderer.render(setup.stage);

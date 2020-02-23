@@ -22,7 +22,7 @@ class startScreen {
   };
 
   addWelcome = () => {
-    let welcomeText = new PIXI.Text("SHOOT THE BIRD", {
+    let welcomeText = new PIXI.Text("SHOOT THE BIRDS", {
       fontFamily: "Sedgwick Ave Display",
       fontSize: 200 * this.setup.BS,
       fill: 0x3d5061
@@ -36,6 +36,7 @@ class startScreen {
 
   addStartButton = () => {
     const button = new Button(this.setup, {
+      text: "start",
       getX: () => {
         return window.innerWidth / 2;
       },

@@ -1,9 +1,10 @@
 class Bird {
   constructor(setup, textureInit) {
+    setup.debugLog("new Bird");
     this.setup = setup;
     let resources = setup.loader.resources;
 
-    const run = [];
+    const frames = [];
     const textures = [
       "birdRedHat",
       "birdYellow",
@@ -11,14 +12,30 @@ class Bird {
       "birdGreenBlack",
       "birdWhiteChick"
     ];
-    console.log(setup.loader.resources);
+    const texturesSetup = {
+      birdRedHat: {
+        speed: 7
+      },
+      birdYellow: {
+        speed: 1
+      },
+      birdPink: {
+        speed: 2
+      },
+      birdGreenBlack: {
+        speed: 3
+      },
+      birdWhiteChick: {
+        speed: 12
+      }
+    };
 
-    const texture = textureInit
+    this.texture = textureInit
       ? setup.loader.resources[textureInit].texture.clone()
       : setup.loader.resources[
           textures.getRandomValue(textures)
         ].texture.clone();
-    run.push(
+    frames.push(
       new PIXI.Rectangle(0, 0, 233, 185),
       new PIXI.Rectangle(233, 0, 233, 185),
       new PIXI.Rectangle(466, 0, 233, 185),
@@ -29,10 +46,9 @@ class Bird {
       new PIXI.Rectangle(233, 370, 233, 185),
       new PIXI.Rectangle(466, 370, 233, 185)
     );
-    texture.frame = run[0];
-    this.run = run;
-    const pixiObj = new PIXI.Sprite(texture);
-    this.texture = texture;
+    this.texture.frame = frames[0];
+    this.frames = frames;
+    const pixiObj = new PIXI.Sprite(this.texture);
     pixiObj.scale.set(Math.random() * 0.4 + 0.4);
 
     this.pixiObj = pixiObj;
@@ -47,7 +63,7 @@ class Bird {
       x: 1,
       y: 1
     };
-    this.speed = Math.random() * 3 + 2;
+    this.speed = Math.random() * 3 + texturesSetup[textureInit].speed;
     pixiObj.anchor.x = 0.5;
     pixiObj.anchor.y = 0.5;
 
@@ -73,7 +89,7 @@ class Bird {
     }
   };
 
-  fly = () => {
+  update = () => {
     if (this.dead == false) {
       if (this.pixiObj.x - this.pixiObj.width / 2 >= window.innerWidth) {
         this.directions.x = false;
@@ -98,7 +114,7 @@ class Bird {
       } else {
         this.af += 1 / this.df;
       }
-      this.texture.frame = this.run[Math.floor(this.af)];
+      this.texture.frame = this.frames[Math.floor(this.af)];
     } else {
       if (this.pixiObj.y <= window.innerHeight) {
         this.pixiObj.y += this.setup.gravity;
@@ -124,7 +140,7 @@ class Bird {
   onClick = e => {
     this.dead = true;
     this.setup.successfulShots += 1;
-    this.texture.frame = this.run[8];
+    this.texture.frame = this.frames[8];
     this.flipVertical();
     this.pixiObj.off("pointerdown", this.onClick);
 

@@ -3,7 +3,7 @@ class button {
     this.setup = setup;
     this.buttonTextSetup = buttonTextSetup;
     const container = new PIXI.Container();
-    this.buttonText = new PIXI.Text("start".toUpperCase(), {
+    this.buttonText = new PIXI.Text(buttonTextSetup.text.toUpperCase(), {
       fontFamily: setup.fontFamily,
       fontSize: 40 * setup.BS,
       fill: 0xf0f1f3
