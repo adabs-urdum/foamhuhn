@@ -30,11 +30,13 @@ class Bird {
       }
     };
 
-    this.texture = textureInit
-      ? setup.loader.resources[textureInit].texture.clone()
-      : setup.loader.resources[
-          textures.getRandomValue(textures)
-        ].texture.clone();
+    this.textureInit = textureInit
+      ? textureInit
+      : textures.getRandomValue(textures);
+
+    this.texture = setup.loader.resources[this.textureInit].texture.clone();
+    this.texture.name = this.textureInit;
+
     frames.push(
       new PIXI.Rectangle(0, 0, 233, 185),
       new PIXI.Rectangle(233, 0, 233, 185),
@@ -139,18 +141,10 @@ class Bird {
 
   onClick = e => {
     this.dead = true;
-    this.setup.successfulShots += 1;
+    this.setup.targetDown.push(this.pixiObj);
     this.texture.frame = this.frames[8];
     this.flipVertical();
     this.pixiObj.off("pointerdown", this.onClick);
-
-    // if (Math.round(Math.random())) {
-    //   const target = new Bird(this.setup);
-    //   this.setup.stage.addChildAt(target.pixiObj, 5);
-    //   this.setup.targets.push(target);
-    //   this.setup.spawnedTargets += 1;
-    //   target._id = this.setup.spawnedTargets;
-    // }
   };
 }
 

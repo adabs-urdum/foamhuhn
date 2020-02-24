@@ -81,13 +81,16 @@ class Bomb {
   update = () => {
     this.pixiObj.rotation += Math.random() * 0.02 * this.rotationDirection;
     if (this.detonated == false) {
-      if (this.pixiObj.x - this.pixiObj.width / 2 >= window.innerWidth) {
+      if (
+        this.pixiObj.x - this.pixiObj.width / 2 >=
+        window.innerWidth + this.pixiObj.width
+      ) {
         this.directions.x = false;
         this.setInitialPositionY();
         this.pixiObj.scale.x *= -1;
       } else if (
         this.pixiObj.x - this.pixiObj.width / 2 <=
-        0 - this.pixiObj.width
+        0 - this.pixiObj.width * 1.5
       ) {
         this.directions.x = true;
         this.setInitialPositionY();

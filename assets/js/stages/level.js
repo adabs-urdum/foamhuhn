@@ -1,17 +1,35 @@
 import Bird from "../characters/bird.js";
 import Bomb from "../characters/bomb.js";
 import Button from "../UI/button.js";
+import GoalBoard from "../UI/goalBoard.js";
 
 class Level {
   constructor(setup, config) {
     this.config = config;
     this.setup = setup;
     this.levelEnded = false;
+    this.goalBoard = null;
     setup.debugLog("---");
     setup.debugLog("new Level");
     setup.debugLog(setup.currentStageId);
 
-    for (let i = 0; i < config.initialTargetAmount; i++) {
+    this.config.goalTotalTargets = 0;
+    if (this.config.goals && this.config.goals.length) {
+      this.config.goalTotalTargets = config.goals.reduce((total, goal) => {
+        return total + goal.amount;
+      }, 0);
+      this.config.goals.map(goal => {
+        for (let index = 0; index < goal.amount; index++) {
+          this.setup.targets.push(new Bird(this.setup, goal.type));
+        }
+      });
+    }
+    this.goalBoard = new GoalBoard(setup, config);
+
+    this.randomTargetsAmount =
+      this.config.initialTargetAmount - this.config.goalTotalTargets;
+
+    for (let i = 0; i < this.randomTargetsAmount; i++) {
       setup.targets.push(
         new Bird(setup, config.targetTypes.getRandomValue(config.targetTypes))
       );
@@ -46,13 +64,14 @@ class Level {
   showLevelInstructions = () => {
     this.levelInstructions = new PIXI.Text(this.config.instructionsText, {
       fontFamily: this.setup.fontFamily,
-      fontSize: 80 * this.setup.BS,
+      fontSize: 40 * this.setup.BS,
       fill: 0x000000
     });
-    this.levelInstructions.anchor.x = 0.5;
+    this.levelInstructions.anchor.x = 1;
     this.levelInstructions.anchor.y = 1;
-    this.levelInstructions.position.x = window.innerWidth / 2;
-    this.levelInstructions.position.y = (window.innerHeight / 8) * 7.5;
+    this.levelInstructions.position.x =
+      window.innerWidth / 2 - this.setup.BS * 90;
+    this.levelInstructions.position.y = (window.innerHeight / 8) * 7.35;
     this.setup.stage.addChildAt(this.levelInstructions, 1);
     this.setup.bringToFront(this.levelInstructions);
   };
@@ -142,10 +161,16 @@ class Level {
     this.setup.bombs.map(bomb => {
       bomb.update();
     });
+    this.goalBoard.update();
 
     if (!this.levelEnded) {
       this.setup.scoreboard.flying.text = this.setup.targets.length;
-      if (!this.setup.targets.length) {
+
+      if (
+        !this.setup.targets.length ||
+        (this.config.goals.length &&
+          this.setup.successfulShots >= this.config.goalTotalTargets)
+      ) {
         clearInterval(this.spawnInterval);
         const button = new Button(this.setup, {
           text: "next",
@@ -174,12 +199,16 @@ class Level {
           bomb.pixiObj.alpha = 0;
           return bomb;
         });
+        this.setup.targets.map(target => {
+          target.pixiObj.alpha = 0;
+        });
         this.showLevelEndMessage();
         this.levelEnded = true;
         this.setup.debugLog("level end");
         this.setup.debugLog("---");
       }
     } else {
+      this.setup.targets = [];
       this.setup.bombs = [];
       this.hideScoreboard();
     }

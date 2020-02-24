@@ -32,6 +32,8 @@ document.addEventListener("DOMContentLoaded", function() {
     spawnedTargets: 0,
     successfulShots: 0,
     targets: [],
+    targetDown: [],
+    targetsDown: [],
     bombs: [],
     isRunning: true,
     scoreboard: {},
@@ -42,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function() {
     lifes: 3,
     currentStageChanged: true,
     stages: ["start", "level-1", "level-2", "level-3", "level-4"],
-    currentStageId: "start",
+    currentStageId: "level-1",
     bringToFront: obj => {
       if (obj) {
         const parent = obj.parent;
@@ -134,6 +136,9 @@ document.addEventListener("DOMContentLoaded", function() {
         setup.stage.removeChild(setup.stage.children[i]);
       }
       setup.targets = [];
+      setup.targetDown = [];
+      setup.targetsDown = [];
+      setup.successfulShots = 0;
       setup.bombs = [];
       this.addBackground();
       this.addBackgroundFront();
@@ -162,6 +167,14 @@ document.addEventListener("DOMContentLoaded", function() {
         .add("bomb", "./dist/img/traps/bomb.png")
         .load();
 
+      this.targetTypes = [
+        "birdRedHat",
+        "birdYellow",
+        "birdPink",
+        "birdGreenBlack",
+        "birdWhiteChick"
+      ];
+
       // throughout the process multiple signals can be dispatched.
       setup.loader.onProgress.add(() => {}); // called once per loaded/errored file
       setup.loader.onError.add(() => {}); // called once per errored file
@@ -181,19 +194,35 @@ document.addEventListener("DOMContentLoaded", function() {
         } else if (setup.currentStageId == "level-1") {
           this.resetStage();
           setup.currentStage = new Level(setup, {
-            targetTypes: ["birdYellow"],
-            initialTargetAmount: 2,
+            targetTypes: ["birdRedHat"],
+            goals: [
+              {
+                type: "birdYellow",
+                amount: 1
+              },
+              {
+                type: "birdRedHat",
+                amount: 1
+              }
+            ],
+            initialTargetAmount: 5,
             spawnNew: false,
-            instructionsText: "shoot all birds",
-            bombs: 5
+            instructionsText: "Find these birds:",
+            bombs: 1
           });
         } else if (setup.currentStageId == "level-2") {
           this.resetStage();
           setup.currentStage = new Level(setup, {
             targetTypes: ["birdYellow", "birdRedHat"],
+            goals: [
+              {
+                type: "birdPink",
+                amount: 1
+              }
+            ],
             initialTargetAmount: 5,
             spawnNew: false,
-            instructionsText: "shoot all birds",
+            instructionsText: "Find these birds:",
             bombs: 5
           });
         } else if (setup.currentStageId == "level-3") {
@@ -202,7 +231,7 @@ document.addEventListener("DOMContentLoaded", function() {
             targetTypes: ["birdYellow", "birdRedHat", "birdWhiteChick"],
             initialTargetAmount: 10,
             spawnNew: false,
-            instructionsText: "shoot all birds",
+            instructionsText: "Shoot all the birds",
             bombs: 5
           });
         } else if (setup.currentStageId == "level-4") {
@@ -217,7 +246,7 @@ document.addEventListener("DOMContentLoaded", function() {
             ],
             initialTargetAmount: 20,
             spawnNew: false,
-            instructionsText: "shoot all birds",
+            instructionsText: "Shoot all the birds",
             bombs: 5
           });
         }
