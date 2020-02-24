@@ -1,10 +1,14 @@
 html {
-  font-family: "Gilroy", sans-serif;
+  font-family: "Sedgwick Ave Display", sans-serif;
   font-weight: 200;
   font-size: #{$BaseRemSize}px;
   line-height: 120%;
   color: $Black;
   cursor: pointer;
+}
+
+body {
+  @include bs-font-size(32);
 }
 
 h1,
@@ -13,31 +17,33 @@ h3,
 h4,
 h5,
 h6 {
-  margin: 0;
+  margin-top: 0;
   padding: 0;
   line-height: 120%;
   font-weight: 700;
 }
 
 h1 {
-  @include bs-font-size(62);
+  @include bs-font-size(90);
+  margin-bottom: $BS * 20;
 }
 
 h2 {
-  @include bs-font-size(44);
+  @include bs-font-size(70);
+  margin-bottom: $BS * 20;
 }
 
 h3 {
-  @include bs-font-size(36);
+  @include bs-font-size(55);
 }
 
 h4 {
-  @include bs-font-size(26);
+  @include bs-font-size(45);
 }
 
 h5,
 h6 {
-  @include bs-font-size(20);
+  @include bs-font-size(35);
 }
 
 p {
@@ -55,7 +61,7 @@ li {
 a {
   display: inline-block;
   text-decoration: none;
-  color: inherit;
+  color: #587891;
   transition: transform 0.3s ease-out;
 
   &:hover {

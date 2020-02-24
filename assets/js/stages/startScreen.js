@@ -2,9 +2,10 @@ import Button from "./../UI/button.js";
 
 class startScreen {
   constructor(setup) {
-    console.log("constructing startScreen");
+    setup.debugLog("constructing startScreen");
     this.setup = setup;
     this.welcomeText = this.addWelcome();
+    this.setup.lifes = this.setup.totalLifes;
     this.startButton = this.addStartButton();
     this.bindEvents();
   }
@@ -22,7 +23,8 @@ class startScreen {
   };
 
   addWelcome = () => {
-    let welcomeText = new PIXI.Text("SHOOT THE BIRDS", {
+    const text = this.setup.lifes ? "SHOOT THE BIRDS" : "GAME OVER";
+    let welcomeText = new PIXI.Text(text, {
       fontFamily: "Sedgwick Ave Display",
       fontSize: 200 * this.setup.BS,
       fill: 0x3d5061

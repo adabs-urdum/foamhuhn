@@ -8,10 +8,15 @@ class lifeBar {
       new PIXI.Rectangle(0, 0, 150 / 2, 64),
       new PIXI.Rectangle(150 / 2, 0, 150 / 2, 64)
     );
-    for (let index = 0; index < setup.totalLifes; index++) {
+    this.reDrawHearts();
+  }
+
+  reDrawHearts = () => {
+    this.hearts = [];
+    for (let index = 0; index < this.setup.totalLifes; index++) {
       this.addHeart(index);
     }
-  }
+  };
 
   addHeart = index => {
     this.heartTexture = this.setup.loader.resources["heart"].texture.clone();
@@ -25,16 +30,14 @@ class lifeBar {
     heart.position.y = (window.innerHeight / 8) * 7.4;
     heart.position.x =
       window.innerWidth / 12 + heart.width * index + index * 20;
-    this.setup.stage.addChildAt(heart, 0);
-    this.hearts.push(heart);
+    this.setup.stage.addChildAt(heart, 1);
     this.setup.bringToFront(heart);
+    this.hearts.push(heart);
   };
 
   update = () => {
-    if (this.setup.lifes <= 0) {
-      return;
-    }
     this.hearts.map(heart => {
+      this.setup.bringToFront(heart);
       const position = heart._id + 1;
 
       if (position > this.setup.lifes) {
@@ -43,6 +46,13 @@ class lifeBar {
         heart.texture.frame = this.frames[1];
       }
     });
+
+    if (this.setup.lifes <= 0) {
+      this.setup.debugLog("dead – 0 lifes left");
+      this.setup.debugLog("---");
+      this.setup.currentStageChanged = true;
+      this.setup.currentStageId = "start";
+    }
   };
 }
 

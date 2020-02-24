@@ -4,6 +4,7 @@ import "babel-polyfill";
 import WebFont from "webfontloader";
 import * as PIXI from "pixi.js";
 import Bird from "./characters/bird.js";
+import LifeBar from "./UI/lifeBar.js";
 import Level from "./stages/level.js";
 import StartScreen from "./stages/startScreen.js";
 window.PIXI = PIXI;
@@ -13,6 +14,12 @@ Array.prototype.getRandomValue = inputArray => {
 };
 
 document.addEventListener("DOMContentLoaded", function() {
+  const infoOverlay = document.getElementById("infoOverlay");
+  const infoOverlayTrigger = document.getElementById("infoOverlayTrigger");
+  infoOverlayTrigger.addEventListener("click", () => {
+    infoOverlay.classList.toggle("infoOverlay--active");
+  });
+
   const debug = true;
   const setup = {
     fontFamily: "Sedgwick Ave Display",
@@ -35,12 +42,14 @@ document.addEventListener("DOMContentLoaded", function() {
     lifes: 3,
     currentStageChanged: true,
     stages: ["start", "level-1", "level-2", "level-3", "level-4"],
-    currentStageId: "level-1",
+    currentStageId: "start",
     bringToFront: obj => {
       if (obj) {
         const parent = obj.parent;
-        parent.removeChild(obj);
-        parent.addChild(obj);
+        if (parent) {
+          parent.removeChild(obj);
+          parent.addChild(obj);
+        }
       }
     },
     debugLog: str => {
@@ -124,8 +133,11 @@ document.addEventListener("DOMContentLoaded", function() {
       for (var i = setup.stage.children.length - 1; i >= 0; i--) {
         setup.stage.removeChild(setup.stage.children[i]);
       }
+      setup.targets = [];
+      setup.bombs = [];
       this.addBackground();
       this.addBackgroundFront();
+      this.lifeBar.reDrawHearts();
     };
 
     preloadReady = () => {
@@ -158,6 +170,10 @@ document.addEventListener("DOMContentLoaded", function() {
     };
 
     animate = () => {
+      if (!this.lifeBar) {
+        this.lifeBar = new LifeBar(setup);
+      }
+
       if (setup.currentStageChanged) {
         if (setup.currentStageId == "start") {
           this.resetStage();
@@ -205,12 +221,14 @@ document.addEventListener("DOMContentLoaded", function() {
             bombs: 5
           });
         }
-        setup.currentStageChanged = false;
-      }
 
-      if (setup.currentStageId.indexOf("level") >= 0) {
-        if (Object.keys(setup.scoreboard).length) {
-          setup.currentStage.updateLevel();
+        setup.currentStageChanged = false;
+      } else {
+        if (setup.currentStageId.indexOf("level") >= 0) {
+          this.lifeBar.update();
+          if (Object.keys(setup.scoreboard).length) {
+            setup.currentStage.updateLevel();
+          }
         }
       }
 

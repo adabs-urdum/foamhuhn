@@ -2,6 +2,7 @@ class Bomb {
   constructor(setup) {
     setup.debugLog("new Bomb");
     this.setup = setup;
+    this.rotationDirection = Math.round(Math.random()) ? -1 : 1;
     this.ranDetonation = false;
     this.detonated = false;
     this.speed = Math.random() * 3 + 2;
@@ -19,7 +20,7 @@ class Bomb {
     this.frames = [];
     this.maxFrames = 11;
     this.af = 0;
-    this.df = 1; // images per seconds
+    this.df = 1.5; // images per seconds
     this.frames.push(
       new PIXI.Rectangle(0, 0, singleFrameWidth, 190),
       new PIXI.Rectangle(singleFrameWidth, 0, singleFrameWidth, 190),
@@ -78,6 +79,7 @@ class Bomb {
   };
 
   update = () => {
+    this.pixiObj.rotation += Math.random() * 0.02 * this.rotationDirection;
     if (this.detonated == false) {
       if (this.pixiObj.x - this.pixiObj.width / 2 >= window.innerWidth) {
         this.directions.x = false;

@@ -1,7 +1,6 @@
 import Bird from "../characters/bird.js";
 import Bomb from "../characters/bomb.js";
 import Button from "../UI/button.js";
-import LifeBar from "../UI/lifeBar.js";
 
 class Level {
   constructor(setup, config) {
@@ -37,7 +36,6 @@ class Level {
     this.showLevelMessage();
     this.showLevelInstructions();
     this.addScoreBoard();
-    this.lifeBar = new LifeBar(setup);
 
     this.spawnInterval = null;
     if (config.spawnNew) {
@@ -144,8 +142,6 @@ class Level {
     this.setup.bombs.map(bomb => {
       bomb.update();
     });
-
-    this.lifeBar.update();
 
     if (!this.levelEnded) {
       this.setup.scoreboard.flying.text = this.setup.targets.length;
