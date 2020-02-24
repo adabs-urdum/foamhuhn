@@ -7,11 +7,53 @@
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Sedgwick+Ave+Display&display=swap"
+      rel="stylesheet"
+    />
     <title>Vanilla Setup 2.0</title>
   </head>
-  <link rel="stylesheet" href="./dist/css/styles.min.css" />
+  <link rel="stylesheet" href="./dist/css/styles.min.css?v=1" />
   <body>
+    <section id="infoOverlay" class="infoOverlay">
+      <div class="infoOverlay__container">
+        <h1 class="infoOverlay__title">shoot the birds 0.0.1</h1>
+        <div class="infoOverlay__credits">
+          <h2 class="infoOverlay__creditsTitle">About</h2>
+          <div class="">
+            <p class="infoOverlay__text">
+              started creating this moorhuhn like thingy while goofing around
+              with <a href="http://pixijs.io" target="_blank">PixiJS</a>.
+            </p>
+          </div>
+        </div>
+        <div class="infoOverlay__credits">
+          <h2 class="infoOverlay__creditsTitle">Credits</h2>
+          <div class="infoOverlay__credit">
+            <h3>Art</h3>
+            <p>
+              <a href="https://opengameart.org" target="_blank"
+                >Open Game Art</a
+              >
+              and
+              <a href="http://bevouliin.com/" target="_blank">bevouliin.com</a>
+            </p>
+          </div>
+          <div class="infoOverlay__credit">
+            <h3>Code</h3>
+            <p>
+              <a href="https://cyrill-lehmann.ch" target="_blank"
+                >me, myself and i</a
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div id="infoOverlayTrigger" class="infoOverlay__trigger">
+      <span>?</span>
+    </div>
     <canvas id="canvas"></canvas>
-    <script src="./dist/js/functions.min.js?v=5"></script>
+    <script src="./dist/js/functions.min.js?v=7"></script>
   </body>
 </html>
