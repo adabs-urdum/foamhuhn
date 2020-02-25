@@ -8,7 +8,8 @@ class GoalBoard {
     this.goals = [];
     this.birdTypes = [];
     this.goalsPixiObj = [];
-    this.birdOffset = window.innerWidth / 2;
+    this.birdOffset = this.setup.BS * 70;
+    this.mobileFactor = window.innerWidth <= 768 ? 2.5 : 1;
     this.frames = [
       new PIXI.Rectangle(0, 0, 233, 185),
       new PIXI.Rectangle(233, 0, 233, 185),
@@ -40,7 +41,9 @@ class GoalBoard {
   };
 
   onWindowResize = () => {
-    this.birdOffset = window.innerWidth / 2;
+    this.mobileFactor = window.innerWidth <= 768 ? 2.5 : 1;
+    console.log(this.mobileFactor);
+    this.birdOffset = this.setup.BS * 70;
     this.goalsPixiObj.map(goalPixiObj => {
       this.setup.bringToFront(goalPixiObj);
       this.setGoalPixiObjPosition(goalPixiObj);
@@ -48,11 +51,9 @@ class GoalBoard {
   };
 
   setGoalPixiObjPosition = pixiObj => {
-    pixiObj.scale.x = 0.35;
-    pixiObj.scale.y = 0.35;
-    pixiObj.scale.set((window.innerWidth / 100) * 0.03);
+    pixiObj.scale.set((window.innerWidth / 100) * 0.03 * this.mobileFactor);
     pixiObj.x = this.birdOffset + pixiObj.width;
-    pixiObj.y = (window.innerHeight / 8) * 7.4;
+    pixiObj.y = (window.innerHeight / 8) * 6.9;
     this.birdOffset = pixiObj.x;
   };
 
@@ -64,7 +65,7 @@ class GoalBoard {
     const pixiObj = new PIXI.Sprite(this.texture);
     pixiObj.alpha = 0.3;
     pixiObj.anchor.x = 1;
-    pixiObj.anchor.y = 0.8;
+    pixiObj.anchor.y = 0;
 
     this.setup.stage.addChildAt(pixiObj, 5);
     this.setup.bringToFront(pixiObj);

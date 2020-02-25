@@ -2,6 +2,7 @@ class lifeBar {
   constructor(setup) {
     setup.debugLog("new lifeBar");
     this.setup = setup;
+    this.mobileFactor = window.innerWidth <= 768 ? 2 : 1;
     this.hearts = [];
     this.frames = [];
     this.frames.push(
@@ -17,6 +18,8 @@ class lifeBar {
   };
 
   onWindowResize = () => {
+    this.mobileFactor = window.innerWidth <= 768 ? 2 : 1;
+
     this.hearts.map((heart, index) => {
       this.setHeartPosition(index, heart);
     });
@@ -30,10 +33,13 @@ class lifeBar {
   };
 
   setHeartPosition = (index, heart) => {
-    heart.scale.set((window.innerWidth / 100) * 0.05);
-    heart.y = (window.innerHeight / 8) * 7.4;
+    heart.scale.set((window.innerWidth / 100) * 0.03 * this.mobileFactor);
+    heart.y = heart.height;
     heart.x =
-      window.innerWidth / 12 + heart.width * index + index * this.setup.BS * 20;
+      window.innerWidth -
+      this.setup.BS * 40 -
+      heart.width * (index + 1) -
+      (index + 1) * this.setup.BS * 20;
     this.setup.bringToFront(heart);
   };
 
@@ -44,8 +50,8 @@ class lifeBar {
 
     const heart = new PIXI.Sprite(this.heartTexture);
     heart._id = index;
-    heart.anchor.x = 0.5;
-    heart.anchor.y = 1;
+    heart.anchor.x = 0;
+    heart.anchor.y = 0;
     this.setup.stage.addChildAt(heart, 1);
     this.hearts.push(heart);
     this.setHeartPosition(index, heart);

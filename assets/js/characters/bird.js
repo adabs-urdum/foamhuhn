@@ -35,7 +35,38 @@ class Bird {
     };
 
     this.addBird();
+    this.bindEvents();
   }
+
+  bindEvents = () => {
+    window.addEventListener("resize", this.onWindowResize);
+  };
+
+  onWindowResize = e => {
+    this.setBirdScale();
+    this.setBirdSpeed();
+  };
+
+  setBirdScale = () => {
+    if (window.innerWidth <= 768) {
+      this.pixiObj.scale.set(
+        Math.random() * 0.4 + (window.innerWidth / 1000) * 0.55
+      );
+    } else {
+      this.pixiObj.scale.set(
+        Math.random() * 0.4 + (window.innerWidth / 1000) * 0.25
+      );
+    }
+  };
+
+  setBirdSpeed = () => {
+    let speedFactor = 3;
+    if (window.innerWidth <= 768) {
+      speedFactor = 0;
+    }
+    this.speed =
+      Math.random() * speedFactor + this.texturesSetup[this.textureInit].speed;
+  };
 
   addBird = () => {
     this.texture = this.setup.loader.resources[
@@ -56,28 +87,30 @@ class Bird {
     );
     this.texture.frame = this.frames[0];
     const pixiObj = new PIXI.Sprite(this.texture);
-    pixiObj.scale.set(Math.random() * 0.4 + 0.4);
 
     this.maxFramesFly = 4;
     this.af = 0;
     this.df = this.maxFramesFly; // images per seconds
-    pixiObj.zOrder = 2;
-    pixiObj.zIndex = 2;
 
     this.dead = false;
     this.directions = {
       x: 1,
       y: 1
     };
-    this.speed = Math.random() * 3 + this.texturesSetup[this.textureInit].speed;
+
+    this.setBirdSpeed();
+
     pixiObj.anchor.x = 0.5;
     pixiObj.anchor.y = 0.5;
 
     pixiObj.interactive = true;
-    pixiObj.on("pointerdown", this.onClick);
+    pixiObj.buttonMode = true;
+    pixiObj.click = this.onClick;
+    pixiObj.tap = this.onClick;
 
     this.pixiObj = pixiObj;
 
+    this.setBirdScale();
     this.setInitialPositionY();
     this.setInitialPositionX();
   };

@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function() {
       "level-5",
       "level-6"
     ],
-    currentStageId: "level-1",
+    currentStageId: "start",
     bringToFront: obj => {
       if (obj) {
         const parent = obj.parent;
@@ -192,8 +192,6 @@ document.addEventListener("DOMContentLoaded", function() {
       const crossHair = new PIXI.Sprite(texture);
       crossHair.anchor.x = 0.5;
       crossHair.anchor.y = 0.5;
-      crossHair.scale.x = 0.1;
-      crossHair.scale.y = 0.1;
       crossHair.x = crossHair.width * -1;
       crossHair.y = crossHair.height * -1;
       this.crossHair = crossHair;
@@ -202,6 +200,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     setCrossHairPosition = e => {
       if (this.crossHair) {
+        this.crossHair.scale.x = (window.innerWidth / 10000) * 0.5;
+        this.crossHair.scale.y = (window.innerWidth / 10000) * 0.5;
         this.crossHair.x = e.clientX;
         this.crossHair.y = e.clientY;
         setup.bringToFront(this.crossHair);

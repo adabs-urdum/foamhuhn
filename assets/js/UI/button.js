@@ -1,11 +1,16 @@
 class button {
   constructor(setup, buttonTextSetup) {
     this.setup = setup;
+    if (window.innerWidth <= 768) {
+      this.initFontsize = 80;
+    } else {
+      this.initFontsize = 40;
+    }
     this.buttonTextSetup = buttonTextSetup;
     const container = new PIXI.Container();
     this.buttonText = new PIXI.Text(buttonTextSetup.text.toUpperCase(), {
       fontFamily: setup.fontFamily,
-      fontSize: 40 * setup.BS,
+      fontSize: this.initFontsize * setup.BS,
       fill: 0xf0f1f3
     });
     this.buttonText.anchor.x = 0.5;
@@ -17,7 +22,9 @@ class button {
     this.box = box;
     this.setSizeAndPositionBox();
     box.interactive = true;
+    box.buttonMode = true;
     box.click = buttonTextSetup.onClick;
+    box.tap = buttonTextSetup.onClick;
     box.mouseover = this.onMouseOver;
     box.mouseout = this.onMouseOut;
 
@@ -29,8 +36,22 @@ class button {
     this.bindEvents();
   }
 
+  bindEvents = () => {
+    window.addEventListener("resize", this.onWindowResize);
+  };
+
+  onWindowResize = () => {
+    if (window.innerWidth <= 768) {
+      this.initFontsize = 80;
+    } else {
+      this.initFontsize = 40;
+    }
+    this.setSizeAndPositionText();
+    this.setSizeAndPositionBox();
+  };
+
   setSizeAndPositionBox = () => {
-    const padding = this.setup.BS * 40;
+    const padding = this.setup.BS * this.initFontsize;
     this.box.position.x =
       this.buttonText.position.x - this.buttonText.width / 2 - padding / 2;
     this.box.position.y =
@@ -42,16 +63,7 @@ class button {
   setSizeAndPositionText = () => {
     this.buttonText.position.x = this.buttonTextSetup.getX();
     this.buttonText.position.y = this.buttonTextSetup.getY();
-    this.buttonText.style.fontSize = 40 * this.setup.BS;
-  };
-
-  bindEvents = () => {
-    window.addEventListener("resize", this.onWindowResize);
-  };
-
-  onWindowResize = () => {
-    this.setSizeAndPositionText();
-    this.setSizeAndPositionBox();
+    this.buttonText.style.fontSize = this.initFontsize * this.setup.BS;
   };
 
   onMouseOver = () => {

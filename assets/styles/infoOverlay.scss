@@ -52,3 +52,15 @@
     }
   }
 }
+
+@media #{$BreakpointS} {
+  .infoOverlay {
+    &__trigger {
+      padding: $BS*80 $BS*60;
+
+      span {
+        @include bs-font-size(120);
+      }
+    }
+  }
+}

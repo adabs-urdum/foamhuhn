@@ -9,6 +9,8 @@ class Level {
     this.setup = setup;
     this.levelEnded = false;
     this.goalBoard = null;
+    this.mobileFactor = window.innerWidth <= 768 ? 2 : 1;
+
     setup.debugLog("---");
     setup.debugLog("new Level");
     setup.debugLog(setup.currentStageId);
@@ -67,24 +69,24 @@ class Level {
   };
 
   onWindowResize = () => {
+    this.mobileFactor = window.innerWidth <= 768 ? 2 : 1;
     this.setLevelInstructionsPosition();
     this.setLevelMessagePosition();
     this.setLevelEndMessagePosition();
   };
 
   setLevelInstructionsPosition = () => {
-    this.levelInstructions.position.x = this.config.goalTotalTargets
-      ? window.innerWidth / 2 - this.setup.BS * 20
-      : window.innerWidth / 2;
-    this.levelInstructions.position.y = (window.innerHeight / 8) * 7.37;
-    this.levelInstructions.style.fontSize = 40 * this.setup.BS;
+    this.levelInstructions.anchor.x = 0;
+    this.levelInstructions.position.x = this.setup.BS * 80;
+    this.levelInstructions.position.y = (window.innerHeight / 8) * 6.9;
+    this.levelInstructions.style.fontSize =
+      50 * this.setup.BS * this.mobileFactor;
     this.setup.bringToFront(this.levelInstructions);
   };
 
   showLevelInstructions = () => {
     this.levelInstructions = new PIXI.Text(this.config.instructionsText, {
       fontFamily: this.setup.fontFamily,
-      fontSize: 40 * this.setup.BS,
       fill: 0x000000
     });
     this.levelInstructions.anchor.x = this.config.goalTotalTargets ? 1 : 0;
@@ -96,14 +98,14 @@ class Level {
   setLevelMessagePosition = () => {
     this.levelMessage.position.x = window.innerWidth / 2;
     this.levelMessage.position.y = window.innerHeight / 3;
-    this.levelMessage.style.fontSize = 150 * this.setup.BS;
+    this.levelMessage.style.fontSize = 150 * this.setup.BS * this.mobileFactor;
   };
 
   showLevelMessage = () => {
     this.setup.debugLog("showLevelMessage");
     this.levelMessage = new PIXI.Text(this.setup.currentStageId.toUpperCase(), {
       fontFamily: this.setup.fontFamily,
-      fontSize: 150 * this.setup.BS,
+      fontSize: 150 * this.setup.BS * this.mobileFactor,
       fill: 0x000000
     });
     this.levelMessage.anchor.set(0.5);
@@ -120,7 +122,8 @@ class Level {
     if (this.levelEndMessage) {
       this.levelEndMessage.position.x = window.innerWidth / 2;
       this.levelEndMessage.position.y = window.innerHeight / 3;
-      this.levelEndMessage.style.fontSize = 150 * this.setup.BS;
+      this.levelEndMessage.style.fontSize =
+        150 * this.setup.BS * this.mobileFactor;
     }
   };
 
@@ -131,7 +134,7 @@ class Level {
       $congratsStrings.getRandomValue($congratsStrings),
       {
         fontFamily: this.setup.fontFamily,
-        fontSize: 150 * this.setup.BS,
+        fontSize: 150 * this.setup.BS * this.mobileFactor,
         fill: 0x000000,
         alpha: 1
       }
