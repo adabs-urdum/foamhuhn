@@ -8,18 +8,19 @@ class button {
       fontSize: 40 * setup.BS,
       fill: 0xf0f1f3
     });
-    this.buttonText.anchor.set(0.5);
+    this.buttonText.anchor.x = 0.5;
+    this.buttonText.anchor.y = 0.5;
     this.setSizeAndPositionText();
-
-    container.interactive = true;
-    container.click = buttonTextSetup.onClick;
-    container.mouseover = this.onMouseOver;
-    container.mouseout = this.onMouseOut;
 
     const box = PIXI.Sprite.from(PIXI.Texture.WHITE);
     box.tint = 0x3d5061;
     this.box = box;
     this.setSizeAndPositionBox();
+    box.interactive = true;
+    box.buttonMode = true;
+    box.click = buttonTextSetup.onClick;
+    box.mouseover = this.onMouseOver;
+    box.mouseout = this.onMouseOut;
 
     container.addChild(box);
     container.addChild(this.buttonText);

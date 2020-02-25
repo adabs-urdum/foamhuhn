@@ -8,6 +8,7 @@ class GoalBoard {
     this.goals = [];
     this.birdTypes = [];
     this.goalsPixiObj = [];
+    this.birdOffset = window.innerWidth / 2;
     this.frames = [
       new PIXI.Rectangle(0, 0, 233, 185),
       new PIXI.Rectangle(233, 0, 233, 185),
@@ -41,16 +42,16 @@ class GoalBoard {
     pixiObj.alpha = 0.3;
     pixiObj.scale.x = 0.35;
     pixiObj.scale.y = 0.35;
-    pixiObj.anchor.x = 0;
+    pixiObj.anchor.x = 1;
     pixiObj.anchor.y = 0.5;
-    pixiObj.x =
-      window.innerWidth / 2 +
-      pixiObj.width * (index + goalIndex) +
-      pixiObj.width * goalIndex;
+
+    pixiObj.x = this.birdOffset + pixiObj.width;
     pixiObj.y = (window.innerHeight / 8) * 7.2;
     this.setup.stage.addChildAt(pixiObj, 5);
     this.setup.bringToFront(pixiObj);
     this.goalsPixiObj.push(pixiObj);
+
+    this.birdOffset = pixiObj.x;
   };
 
   update = () => {

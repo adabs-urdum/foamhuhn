@@ -53,7 +53,6 @@ class Level {
 
     this.showLevelMessage();
     this.showLevelInstructions();
-    this.addScoreBoard();
 
     this.spawnInterval = null;
     if (config.spawnNew) {
@@ -67,10 +66,11 @@ class Level {
       fontSize: 40 * this.setup.BS,
       fill: 0x000000
     });
-    this.levelInstructions.anchor.x = 1;
+    this.levelInstructions.anchor.x = this.config.goalTotalTargets ? 1 : 0;
     this.levelInstructions.anchor.y = 1;
-    this.levelInstructions.position.x =
-      window.innerWidth / 2 - this.setup.BS * 90;
+    this.levelInstructions.position.x = this.config.goalTotalTargets
+      ? window.innerWidth / 2 - this.setup.BS * 20
+      : window.innerWidth / 2;
     this.levelInstructions.position.y = (window.innerHeight / 8) * 7.35;
     this.setup.stage.addChildAt(this.levelInstructions, 1);
     this.setup.bringToFront(this.levelInstructions);
@@ -78,7 +78,7 @@ class Level {
 
   showLevelMessage = () => {
     this.setup.debugLog("showLevelMessage");
-    this.levelMessage = new PIXI.Text(this.setup.currentStageId, {
+    this.levelMessage = new PIXI.Text(this.setup.currentStageId.toUpperCase(), {
       fontFamily: this.setup.fontFamily,
       fontSize: 150 * this.setup.BS,
       fill: 0x000000
@@ -94,8 +94,6 @@ class Level {
   };
 
   showLevelEndMessage = () => {
-    this.hideScoreboard();
-    this.levelInstructions.alpha = 0;
     this.setup.debugLog("showLevelEndMessage");
     const $congratsStrings = ["NICE!", "GOOD JOB!", "WELL DONE!"];
     this.levelMessage = new PIXI.Text(
@@ -135,25 +133,6 @@ class Level {
     this.setup.spawnInterval = this.spawnInterval;
   };
 
-  addScoreBoard = () => {
-    let flying = new PIXI.Text(this.setup.targets.length, {
-      fontFamily: this.setup.fontFamily,
-      fontSize: 200,
-      fill: 0xffffff,
-      align: "center"
-    });
-    flying.anchor.set(0.5);
-    flying.position.set(window.innerWidth / 2, window.innerHeight / 4);
-
-    this.setup.stage.addChildAt(flying, 1);
-
-    this.setup.scoreboard["flying"] = flying;
-  };
-
-  hideScoreboard = () => {
-    this.setup.scoreboard["flying"].alpha = 0;
-  };
-
   updateLevel = () => {
     this.setup.targets.map(target => {
       target.update();
@@ -164,23 +143,24 @@ class Level {
     this.goalBoard.update();
 
     if (!this.levelEnded) {
-      this.setup.scoreboard.flying.text = this.setup.targets.length;
-
       if (
         !this.setup.targets.length ||
         (this.config.goals.length &&
           this.setup.successfulShots >= this.config.goalTotalTargets)
       ) {
         clearInterval(this.spawnInterval);
+
         const button = new Button(this.setup, {
           text: "next",
           getX: () => {
             return window.innerWidth / 2;
           },
           getY: () => {
-            return window.innerHeight / 2;
+            return this.levelMessage.position.y + this.levelMessage.height;
           },
           onClick: e => {
+            this.setup.debugLog("clicked button");
+
             const currentStageKey = this.setup.stages.indexOf(
               this.setup.currentStageId
             );
@@ -210,7 +190,6 @@ class Level {
     } else {
       this.setup.targets = [];
       this.setup.bombs = [];
-      this.hideScoreboard();
     }
   };
 }

@@ -23,7 +23,13 @@ class startScreen {
   };
 
   addWelcome = () => {
-    const text = this.setup.lifes ? "SHOOT THE BIRDS" : "GAME OVER";
+    let text = "SHOOT THE BIRDS";
+    if (!this.setup.lifes) {
+      text = "GAME OVER";
+    } else if (this.setup.gameStarted) {
+      text = "THAT'S IT, THANKS";
+    }
+
     let welcomeText = new PIXI.Text(text, {
       fontFamily: "Sedgwick Ave Display",
       fontSize: 200 * this.setup.BS,

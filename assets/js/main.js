@@ -7,6 +7,7 @@ import Bird from "./characters/bird.js";
 import LifeBar from "./UI/lifeBar.js";
 import Level from "./stages/level.js";
 import StartScreen from "./stages/startScreen.js";
+import levels from "./levels.js";
 window.PIXI = PIXI;
 
 Array.prototype.getRandomValue = inputArray => {
@@ -23,6 +24,7 @@ document.addEventListener("DOMContentLoaded", function() {
   const debug = true;
   const setup = {
     fontFamily: "Sedgwick Ave Display",
+    gameStarted: false,
     messageDuration: 1000,
     designWidth: 1920,
     BS: window.innerWidth / 1920,
@@ -43,8 +45,16 @@ document.addEventListener("DOMContentLoaded", function() {
     totalLifes: 3,
     lifes: 3,
     currentStageChanged: true,
-    stages: ["start", "level-1", "level-2", "level-3", "level-4"],
-    currentStageId: "level-1",
+    stages: [
+      "start",
+      "level-1",
+      "level-2",
+      "level-3",
+      "level-4",
+      "level-5",
+      "level-6"
+    ],
+    currentStageId: "start",
     bringToFront: obj => {
       if (obj) {
         const parent = obj.parent;
@@ -191,71 +201,32 @@ document.addEventListener("DOMContentLoaded", function() {
         if (setup.currentStageId == "start") {
           this.resetStage();
           setup.currentStage = new StartScreen(setup);
+          setup.gameStarted = true;
         } else if (setup.currentStageId == "level-1") {
           this.resetStage();
-          setup.currentStage = new Level(setup, {
-            targetTypes: ["birdRedHat"],
-            goals: [
-              {
-                type: "birdYellow",
-                amount: 1
-              },
-              {
-                type: "birdRedHat",
-                amount: 1
-              }
-            ],
-            initialTargetAmount: 5,
-            spawnNew: false,
-            instructionsText: "Find these birds:",
-            bombs: 1
-          });
+          setup.currentStage = new Level(setup, levels[0]);
         } else if (setup.currentStageId == "level-2") {
           this.resetStage();
-          setup.currentStage = new Level(setup, {
-            targetTypes: ["birdYellow", "birdRedHat"],
-            goals: [
-              {
-                type: "birdPink",
-                amount: 1
-              }
-            ],
-            initialTargetAmount: 5,
-            spawnNew: false,
-            instructionsText: "Find these birds:",
-            bombs: 5
-          });
+          setup.currentStage = new Level(setup, levels[1]);
         } else if (setup.currentStageId == "level-3") {
           this.resetStage();
-          setup.currentStage = new Level(setup, {
-            targetTypes: ["birdYellow", "birdRedHat", "birdWhiteChick"],
-            initialTargetAmount: 10,
-            spawnNew: false,
-            instructionsText: "Shoot all the birds",
-            bombs: 5
-          });
+          setup.currentStage = new Level(setup, levels[2]);
         } else if (setup.currentStageId == "level-4") {
           this.resetStage();
-          setup.currentStage = new Level(setup, {
-            targetTypes: [
-              "birdYellow",
-              "birdRedHat",
-              "birdWhiteChick",
-              "birdPink",
-              "birdGreenBlack"
-            ],
-            initialTargetAmount: 20,
-            spawnNew: false,
-            instructionsText: "Shoot all the birds",
-            bombs: 5
-          });
+          setup.currentStage = new Level(setup, levels[3]);
+        } else if (setup.currentStageId == "level-5") {
+          this.resetStage();
+          setup.currentStage = new Level(setup, levels[4]);
+        } else if (setup.currentStageId == "level-6") {
+          this.resetStage();
+          setup.currentStage = new Level(setup, levels[5]);
         }
 
         setup.currentStageChanged = false;
       } else {
         if (setup.currentStageId.indexOf("level") >= 0) {
           this.lifeBar.update();
-          if (Object.keys(setup.scoreboard).length) {
+          if (!setup.currentStage.levelEnded) {
             setup.currentStage.updateLevel();
           }
         }
