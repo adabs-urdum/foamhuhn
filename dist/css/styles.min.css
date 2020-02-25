@@ -461,7 +461,7 @@ html {
   font-size: 16px;
   line-height: 130%;
   color: #000000;
-  cursor: pointer;
+  cursor: none;
 }
 
 body {
@@ -567,6 +567,7 @@ canvas {
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: default;
 }
 
 .infoOverlay__container {
@@ -598,6 +599,7 @@ canvas {
 .infoOverlay__trigger {
   position: absolute;
   padding: 1.0101vw;
+  cursor: pointer;
 }
 
 .infoOverlay__trigger span {

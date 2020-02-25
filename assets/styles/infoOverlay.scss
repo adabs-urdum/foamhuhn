@@ -11,6 +11,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: default;
   }
 
   &__container {
@@ -42,6 +43,7 @@
   &__trigger {
     position: absolute;
     padding: $BS * 20;
+    cursor: pointer;
 
     span {
       display: block;

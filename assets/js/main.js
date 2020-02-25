@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function() {
     fontFamily: "Sedgwick Ave Display",
     gameStarted: false,
     messageDuration: 1000,
+    windowRatio: window.innerWidth / window.innerHeight,
     designWidth: 1920,
     BS: window.innerWidth / 1920,
     renderer: null,
@@ -97,48 +98,67 @@ document.addEventListener("DOMContentLoaded", function() {
 
     bindEvents = () => {
       window.addEventListener("resize", this.onResize);
+      window.addEventListener("mousemove", this.setCrossHairPosition);
     };
 
     onResize = () => {
       setup.renderer.resize(window.innerWidth, window.innerHeight);
       setup.BS = window.innerWidth / setup.designWidth;
+      setup.windowRatio = window.innerWidth / window.innerHeight;
 
-      this.landscape.height = window.innerHeight;
-      this.landscape.width = window.innerHeight * this.landscape.sideRatio;
+      this.setBackgroundPosition();
+      this.setBackgroundFrontPosition();
+    };
+
+    setBackgroundPosition = () => {
+      if (setup.windowRatio >= this.landscape.sideRatio) {
+        this.landscape.width = window.innerWidth;
+        this.landscape.height = window.innerWidth / this.landscape.sideRatio;
+      } else {
+        this.landscape.height = window.innerHeight;
+        this.landscape.width = window.innerHeight * this.landscape.sideRatio;
+      }
       this.landscape.position.x = window.innerWidth / 2;
       this.landscape.position.y = window.innerHeight / 2;
     };
 
     addBackground = () => {
-      const landscape = PIXI.Sprite.from("./dist/img/background.jpg");
+      const texture = setup.loader.resources["background"].texture.clone();
+      const landscape = new PIXI.Sprite(texture);
       landscape.sideRatio = 1920 / 1080;
+
       landscape.anchor.x = 0.5;
       landscape.anchor.y = 0.5;
-      landscape.zOrder = 1;
-      landscape.zIndex = 1;
-      landscape.height = window.innerHeight;
-      landscape.width = window.innerHeight * landscape.sideRatio;
-      landscape.position.x = window.innerWidth / 2;
-      landscape.position.y = window.innerHeight / 2;
+
       this.landscape = landscape;
+      this.setBackgroundPosition();
       setup.stage.addChildAt(this.landscape, 0);
     };
 
-    addBackgroundFront = () => {
-      const landscapeFront = PIXI.Sprite.from("./dist/img/background_1.png");
-      landscapeFront.anchor.x = 0;
-      landscapeFront.anchor.y = 0;
-      landscapeFront.zOrder = 1;
-      landscapeFront.zIndex = 1;
-      landscapeFront.width = window.innerWidth;
-      landscapeFront.height = window.innerHeight;
-      landscapeFront.position.x = window.innerHeight - landscapeFront.height;
-      landscapeFront.position.y = 0;
-      for (let i = 1; i <= 10; i++) {
-        setup.stage.addChildAt(new PIXI.Graphics(), i);
+    setBackgroundFrontPosition = () => {
+      if (setup.windowRatio >= this.landscape.sideRatio) {
+        this.landscapeFront.width = window.innerWidth;
+        this.landscapeFront.height =
+          window.innerWidth / this.landscape.sideRatio;
+      } else {
+        this.landscapeFront.height = window.innerHeight;
+        this.landscapeFront.width =
+          window.innerHeight * this.landscape.sideRatio;
       }
-      setup.stage.addChildAt(landscapeFront, 10);
+      this.landscapeFront.position.x = window.innerWidth / 2;
+      this.landscapeFront.position.y = window.innerHeight / 2;
+      setup.bringToFront(this.landscapeFront);
+    };
+
+    addBackgroundFront = () => {
+      const texture = setup.loader.resources["backgroundFront"].texture.clone();
+      const landscapeFront = new PIXI.Sprite(texture);
+      landscapeFront.anchor.x = 0.5;
+      landscapeFront.anchor.y = 0.5;
+      setup.stage.addChildAt(landscapeFront, 0);
+      setup.bringToFront(landscapeFront);
       this.landscapeFront = landscapeFront;
+      this.setBackgroundFrontPosition();
     };
 
     resetStage = () => {
@@ -152,15 +172,40 @@ document.addEventListener("DOMContentLoaded", function() {
       setup.bombs = [];
       this.addBackground();
       this.addBackgroundFront();
+      this.addCrossHair();
       this.lifeBar.reDrawHearts();
     };
 
     preloadReady = () => {
       this.addBackground();
 
+      this.addCrossHair();
+
       this.ticker = new PIXI.Ticker();
       this.ticker.add(this.animate);
       this.ticker.start();
+    };
+
+    addCrossHair = () => {
+      const texture = setup.loader.resources["crossHair"].texture.clone();
+
+      const crossHair = new PIXI.Sprite(texture);
+      crossHair.anchor.x = 0.5;
+      crossHair.anchor.y = 0.5;
+      crossHair.scale.x = 0.1;
+      crossHair.scale.y = 0.1;
+      crossHair.x = crossHair.width * -1;
+      crossHair.y = crossHair.height * -1;
+      this.crossHair = crossHair;
+      setup.stage.addChildAt(this.crossHair, 1);
+    };
+
+    setCrossHairPosition = e => {
+      if (this.crossHair) {
+        this.crossHair.x = e.clientX;
+        this.crossHair.y = e.clientY;
+        setup.bringToFront(this.crossHair);
+      }
     };
 
     preloadAssets = () => {
@@ -175,6 +220,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .add("birdGreenBlack", "./dist/img/birds/spreadFly4.png")
         .add("birdWhiteChick", "./dist/img/birds/spreadFly5.png")
         .add("bomb", "./dist/img/traps/bomb.png")
+        .add("crossHair", "./dist/img/crossHair.png")
         .load();
 
       this.targetTypes = [

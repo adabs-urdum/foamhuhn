@@ -17,7 +17,6 @@ class button {
     this.box = box;
     this.setSizeAndPositionBox();
     box.interactive = true;
-    box.buttonMode = true;
     box.click = buttonTextSetup.onClick;
     box.mouseover = this.onMouseOver;
     box.mouseout = this.onMouseOut;

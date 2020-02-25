@@ -9,13 +9,32 @@ class lifeBar {
       new PIXI.Rectangle(150 / 2, 0, 150 / 2, 64)
     );
     this.reDrawHearts();
+    this.bindEvents();
   }
+
+  bindEvents = () => {
+    window.addEventListener("resize", this.onWindowResize);
+  };
+
+  onWindowResize = () => {
+    this.hearts.map((heart, index) => {
+      this.setHeartPosition(index, heart);
+    });
+  };
 
   reDrawHearts = () => {
     this.hearts = [];
     for (let index = 0; index < this.setup.totalLifes; index++) {
       this.addHeart(index);
     }
+  };
+
+  setHeartPosition = (index, heart) => {
+    heart.scale.set((window.innerWidth / 100) * 0.05);
+    heart.y = (window.innerHeight / 8) * 7.4;
+    heart.x =
+      window.innerWidth / 12 + heart.width * index + index * this.setup.BS * 20;
+    this.setup.bringToFront(heart);
   };
 
   addHeart = index => {
@@ -27,12 +46,9 @@ class lifeBar {
     heart._id = index;
     heart.anchor.x = 0.5;
     heart.anchor.y = 1;
-    heart.position.y = (window.innerHeight / 8) * 7.4;
-    heart.position.x =
-      window.innerWidth / 12 + heart.width * index + index * 20;
     this.setup.stage.addChildAt(heart, 1);
-    this.setup.bringToFront(heart);
     this.hearts.push(heart);
+    this.setHeartPosition(index, heart);
   };
 
   update = () => {

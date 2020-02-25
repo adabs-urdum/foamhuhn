@@ -31,7 +31,30 @@ class GoalBoard {
         }
       }
     });
+
+    this.bindEvents();
   }
+
+  bindEvents = () => {
+    window.addEventListener("resize", this.onWindowResize);
+  };
+
+  onWindowResize = () => {
+    this.birdOffset = window.innerWidth / 2;
+    this.goalsPixiObj.map(goalPixiObj => {
+      this.setup.bringToFront(goalPixiObj);
+      this.setGoalPixiObjPosition(goalPixiObj);
+    });
+  };
+
+  setGoalPixiObjPosition = pixiObj => {
+    pixiObj.scale.x = 0.35;
+    pixiObj.scale.y = 0.35;
+    pixiObj.scale.set((window.innerWidth / 100) * 0.03);
+    pixiObj.x = this.birdOffset + pixiObj.width;
+    pixiObj.y = (window.innerHeight / 8) * 7.4;
+    this.birdOffset = pixiObj.x;
+  };
 
   addGoal = (index, goalIndex, goal, bird) => {
     this.goals.push(bird);
@@ -40,18 +63,13 @@ class GoalBoard {
     this.texture.name = goal.type;
     const pixiObj = new PIXI.Sprite(this.texture);
     pixiObj.alpha = 0.3;
-    pixiObj.scale.x = 0.35;
-    pixiObj.scale.y = 0.35;
     pixiObj.anchor.x = 1;
-    pixiObj.anchor.y = 0.5;
+    pixiObj.anchor.y = 0.8;
 
-    pixiObj.x = this.birdOffset + pixiObj.width;
-    pixiObj.y = (window.innerHeight / 8) * 7.2;
     this.setup.stage.addChildAt(pixiObj, 5);
     this.setup.bringToFront(pixiObj);
     this.goalsPixiObj.push(pixiObj);
-
-    this.birdOffset = pixiObj.x;
+    this.setGoalPixiObjPosition(pixiObj);
   };
 
   update = () => {

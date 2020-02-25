@@ -72,7 +72,6 @@ class Bird {
     this.setInitialPositionY();
     this.setInitialPositionX();
     pixiObj.interactive = true;
-    pixiObj.buttonMode = true;
     pixiObj.on("pointerdown", this.onClick);
   }
 
