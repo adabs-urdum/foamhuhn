@@ -4,7 +4,8 @@ class Bird {
     this.setup = setup;
     let resources = setup.loader.resources;
 
-    const frames = [];
+    this.frames = [];
+
     const textures = [
       "birdRedHat",
       "birdYellow",
@@ -12,7 +13,10 @@ class Bird {
       "birdGreenBlack",
       "birdWhiteChick"
     ];
-    const texturesSetup = {
+    this.textureInit = textureInit
+      ? textureInit
+      : textures.getRandomValue(textures);
+    this.texturesSetup = {
       birdRedHat: {
         speed: 7
       },
@@ -30,14 +34,16 @@ class Bird {
       }
     };
 
-    this.textureInit = textureInit
-      ? textureInit
-      : textures.getRandomValue(textures);
+    this.addBird();
+  }
 
-    this.texture = setup.loader.resources[this.textureInit].texture.clone();
+  addBird = () => {
+    this.texture = this.setup.loader.resources[
+      this.textureInit
+    ].texture.clone();
     this.texture.name = this.textureInit;
 
-    frames.push(
+    this.frames.push(
       new PIXI.Rectangle(0, 0, 233, 185),
       new PIXI.Rectangle(233, 0, 233, 185),
       new PIXI.Rectangle(466, 0, 233, 185),
@@ -48,12 +54,10 @@ class Bird {
       new PIXI.Rectangle(233, 370, 233, 185),
       new PIXI.Rectangle(466, 370, 233, 185)
     );
-    this.texture.frame = frames[0];
-    this.frames = frames;
+    this.texture.frame = this.frames[0];
     const pixiObj = new PIXI.Sprite(this.texture);
     pixiObj.scale.set(Math.random() * 0.4 + 0.4);
 
-    this.pixiObj = pixiObj;
     this.maxFramesFly = 4;
     this.af = 0;
     this.df = this.maxFramesFly; // images per seconds
@@ -65,15 +69,18 @@ class Bird {
       x: 1,
       y: 1
     };
-    this.speed = Math.random() * 3 + texturesSetup[textureInit].speed;
+    this.speed = Math.random() * 3 + this.texturesSetup[this.textureInit].speed;
     pixiObj.anchor.x = 0.5;
     pixiObj.anchor.y = 0.5;
 
-    this.setInitialPositionY();
-    this.setInitialPositionX();
     pixiObj.interactive = true;
     pixiObj.on("pointerdown", this.onClick);
-  }
+
+    this.pixiObj = pixiObj;
+
+    this.setInitialPositionY();
+    this.setInitialPositionX();
+  };
 
   setInitialPositionY = () => {
     this.pixiObj.y =

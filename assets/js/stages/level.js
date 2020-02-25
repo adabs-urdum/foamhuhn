@@ -58,7 +58,28 @@ class Level {
     if (config.spawnNew) {
       this.startSpawnInterval();
     }
+
+    this.bindEvents();
   }
+
+  bindEvents = () => {
+    window.addEventListener("resize", this.onWindowResize);
+  };
+
+  onWindowResize = () => {
+    this.setLevelInstructionsPosition();
+    this.setLevelMessagePosition();
+    this.setLevelEndMessagePosition();
+  };
+
+  setLevelInstructionsPosition = () => {
+    this.levelInstructions.position.x = this.config.goalTotalTargets
+      ? window.innerWidth / 2 - this.setup.BS * 20
+      : window.innerWidth / 2;
+    this.levelInstructions.position.y = (window.innerHeight / 8) * 7.37;
+    this.levelInstructions.style.fontSize = 40 * this.setup.BS;
+    this.setup.bringToFront(this.levelInstructions);
+  };
 
   showLevelInstructions = () => {
     this.levelInstructions = new PIXI.Text(this.config.instructionsText, {
@@ -68,12 +89,14 @@ class Level {
     });
     this.levelInstructions.anchor.x = this.config.goalTotalTargets ? 1 : 0;
     this.levelInstructions.anchor.y = 1;
-    this.levelInstructions.position.x = this.config.goalTotalTargets
-      ? window.innerWidth / 2 - this.setup.BS * 20
-      : window.innerWidth / 2;
-    this.levelInstructions.position.y = (window.innerHeight / 8) * 7.35;
     this.setup.stage.addChildAt(this.levelInstructions, 1);
-    this.setup.bringToFront(this.levelInstructions);
+    this.setLevelInstructionsPosition();
+  };
+
+  setLevelMessagePosition = () => {
+    this.levelMessage.position.x = window.innerWidth / 2;
+    this.levelMessage.position.y = window.innerHeight / 3;
+    this.levelMessage.style.fontSize = 150 * this.setup.BS;
   };
 
   showLevelMessage = () => {
@@ -84,19 +107,27 @@ class Level {
       fill: 0x000000
     });
     this.levelMessage.anchor.set(0.5);
-    this.levelMessage.position.x = window.innerWidth / 2;
-    this.levelMessage.position.y = window.innerHeight / 3;
-    this.setup.stage.addChildAt(this.levelMessage, 7);
+    this.setup.stage.addChildAt(this.levelMessage, 0);
+    this.setup.bringToFront(this.levelMessage);
+    this.setLevelMessagePosition();
     setTimeout(() => {
       this.levelMessage.alpha = 0;
       this.setup.debugLog("hide LevelMessage");
     }, this.setup.messageDuration);
   };
 
+  setLevelEndMessagePosition = () => {
+    if (this.levelEndMessage) {
+      this.levelEndMessage.position.x = window.innerWidth / 2;
+      this.levelEndMessage.position.y = window.innerHeight / 3;
+      this.levelEndMessage.style.fontSize = 150 * this.setup.BS;
+    }
+  };
+
   showLevelEndMessage = () => {
     this.setup.debugLog("showLevelEndMessage");
     const $congratsStrings = ["NICE!", "GOOD JOB!", "WELL DONE!"];
-    this.levelMessage = new PIXI.Text(
+    this.levelEndMessage = new PIXI.Text(
       $congratsStrings.getRandomValue($congratsStrings),
       {
         fontFamily: this.setup.fontFamily,
@@ -105,10 +136,12 @@ class Level {
         alpha: 1
       }
     );
-    this.levelMessage.anchor.set(0.5);
-    this.levelMessage.position.x = window.innerWidth / 2;
-    this.levelMessage.position.y = window.innerHeight / 3;
-    this.setup.stage.addChildAt(this.levelMessage, 7);
+    this.levelEndMessage.anchor.set(0.5);
+    this.levelEndMessage.position.x = window.innerWidth / 2;
+    this.levelEndMessage.position.y = window.innerHeight / 3;
+    this.setLevelEndMessagePosition();
+    this.setup.stage.addChildAt(this.levelEndMessage, 0);
+    this.setup.bringToFront(this.levelEndMessage);
   };
 
   startSpawnInterval = () => {

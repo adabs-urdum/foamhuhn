@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function() {
       "level-5",
       "level-6"
     ],
-    currentStageId: "start",
+    currentStageId: "level-1",
     bringToFront: obj => {
       if (obj) {
         const parent = obj.parent;

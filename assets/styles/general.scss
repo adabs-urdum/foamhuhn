@@ -10,6 +10,7 @@ html {
 body {
   @include bs-font-size(32);
   line-height: 130%;
+  cursor: none;
 }
 
 h1,
@@ -77,6 +78,7 @@ a {
 img,
 canvas {
   display: block;
+  cursor: none;
 }
 
 .desktop_only {

@@ -467,6 +467,7 @@ html {
 body {
   font-size: calc(1rem + 0.05051vw * 32 - 16 * 1px);
   line-height: 130%;
+  cursor: none;
 }
 
 h1,
@@ -534,6 +535,7 @@ a:active {
 img,
 canvas {
   display: block;
+  cursor: none;
 }
 
 .desktop_only {
