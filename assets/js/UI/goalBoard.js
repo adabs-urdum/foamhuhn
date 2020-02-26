@@ -8,7 +8,10 @@ class GoalBoard {
     this.goals = [];
     this.birdTypes = [];
     this.goalsPixiObj = [];
-    this.birdOffset = this.setup.BS * 70;
+    this.birdOffset = {
+      x: this.setup.BS * 70,
+      y: 0
+    };
     this.mobileFactor = window.innerWidth <= 768 ? 2.5 : 1;
     this.frames = [
       new PIXI.Rectangle(0, 0, 233, 185),
@@ -42,8 +45,10 @@ class GoalBoard {
 
   onWindowResize = () => {
     this.mobileFactor = window.innerWidth <= 768 ? 2.5 : 1;
-    console.log(this.mobileFactor);
-    this.birdOffset = this.setup.BS * 70;
+    this.birdOffset = {
+      x: this.setup.BS * 70,
+      y: 0
+    };
     this.goalsPixiObj.map(goalPixiObj => {
       this.setup.bringToFront(goalPixiObj);
       this.setGoalPixiObjPosition(goalPixiObj);
@@ -52,9 +57,14 @@ class GoalBoard {
 
   setGoalPixiObjPosition = pixiObj => {
     pixiObj.scale.set((window.innerWidth / 100) * 0.03 * this.mobileFactor);
-    pixiObj.x = this.birdOffset + pixiObj.width;
-    pixiObj.y = (window.innerHeight / 8) * 6.9;
-    this.birdOffset = pixiObj.x;
+    pixiObj.x = this.birdOffset.x + pixiObj.width;
+    pixiObj.y = this.birdOffset.y + (window.innerHeight / 8) * 6.7;
+    this.birdOffset.x = pixiObj.x;
+
+    if (window.innerWidth < this.birdOffset.x + pixiObj.width) {
+      this.birdOffset.x = this.setup.BS * 70;
+      this.birdOffset.y += pixiObj.height;
+    }
   };
 
   addGoal = (index, goalIndex, goal, bird) => {

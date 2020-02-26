@@ -2,7 +2,7 @@ class button {
   constructor(setup, buttonTextSetup) {
     this.setup = setup;
     if (window.innerWidth <= 768) {
-      this.initFontsize = 80;
+      this.initFontsize = 140;
     } else {
       this.initFontsize = 40;
     }
@@ -42,7 +42,7 @@ class button {
 
   onWindowResize = () => {
     if (window.innerWidth <= 768) {
-      this.initFontsize = 80;
+      this.initFontsize = 140;
     } else {
       this.initFontsize = 40;
     }
@@ -52,10 +52,18 @@ class button {
 
   setSizeAndPositionBox = () => {
     const padding = this.setup.BS * this.initFontsize;
+
     this.box.position.x =
       this.buttonText.position.x - this.buttonText.width / 2 - padding / 2;
-    this.box.position.y =
-      this.buttonText.position.y - this.buttonText.height / 2 - padding / 2;
+
+    if (window.innerWidth <= 768) {
+      this.box.position.y =
+        this.buttonText.position.y - this.buttonText.height / 2 - padding / 2;
+    } else {
+      this.box.position.y =
+        this.buttonText.position.y - this.buttonText.height / 2 - padding / 3;
+    }
+
     this.box.width = this.buttonText.width + padding;
     this.box.height = this.buttonText.height - this.setup.BS * 15 + padding;
   };

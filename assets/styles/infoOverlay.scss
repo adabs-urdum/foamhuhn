@@ -15,7 +15,9 @@
   }
 
   &__container {
+    width: 50%;
     transform: translateY(-5%);
+    margin: 0 auto;
   }
 
   &__title {
@@ -24,12 +26,13 @@
 
   &__credits {
     display: flex;
+    justify-content: space-between;
     flex-wrap: wrap;
     margin-top: $BS * 80;
   }
 
   &__credit {
-    width: 50%;
+    width: 45%;
 
     h3 {
       margin-bottom: $BS * 20;
@@ -46,21 +49,48 @@
     cursor: pointer;
 
     span {
-      display: block;
-      transform: translateY(10%);
+      display: none;
       @include bs-font-size(60);
+
+      &:first-child {
+        transform: translateY(10%);
+        display: block;
+      }
+
+      &:last-child {
+        transform: translateY(-5%);
+      }
+    }
+
+    &--active {
+      span {
+        display: block;
+
+        &:first-child {
+          display: none;
+        }
+      }
     }
   }
 }
 
 @media #{$BreakpointS} {
   .infoOverlay {
+
     &__trigger {
       padding: $BS*80 $BS*60;
 
       span {
-        @include bs-font-size(120);
+        @include bs-font-size(200);
       }
+    }
+
+    &__credits {
+      margin-top: $BS * 140;
+    }
+
+    &__container {
+      width: 90%;
     }
   }
 }

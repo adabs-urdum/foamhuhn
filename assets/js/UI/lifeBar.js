@@ -72,6 +72,7 @@ class lifeBar {
     if (this.setup.lifes <= 0) {
       this.setup.debugLog("dead – 0 lifes left");
       this.setup.debugLog("---");
+      clearInterval(this.setup.spawnInterval);
       this.setup.currentStageChanged = true;
       this.setup.currentStageId = "start";
     }

@@ -16,6 +16,7 @@ class Bomb {
     this.setScale();
     this.pixiObj.interactive = true;
     this.pixiObj.click = this.detonate;
+    this.pixiObj.tap = this.detonate;
     const singleFrameWidth = 197;
     this.frames = [];
     this.maxFrames = 11;

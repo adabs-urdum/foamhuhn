@@ -146,6 +146,62 @@ const levels = [
     spawnNew: true,
     instructionsText: "Find these birds:",
     bombs: 10
+  },
+  {
+    id: "Level 8",
+    targetTypes: [
+      "birdRedHat",
+      "birdYellow",
+      "birdPink",
+      "birdGreenBlack",
+      "birdWhiteChick",
+      "birdPunk",
+      "birdPinkStripes",
+      "birdBlueHat",
+      "birdBlue"
+    ],
+    goals: [
+      {
+        type: "birdPinkStripes",
+        amount: 3
+      }
+    ],
+    initialTargetAmount: 120,
+    spawnNew: false,
+    instructionsText: "Find these birds:",
+    bombs: 30
+  },
+  {
+    id: "Level 9",
+    targetTypes: ["birdPinkStripes", "birdGreenBlack"],
+    goals: [
+      {
+        type: "birdPink",
+        amount: 3
+      }
+    ],
+    initialTargetAmount: 30,
+    spawnNew: false,
+    instructionsText: "Find these birds:",
+    bombs: 10
+  },
+  {
+    id: "Level 10",
+    targetTypes: [
+      "birdRedHat",
+      "birdYellow",
+      "birdPink",
+      "birdGreenBlack",
+      "birdWhiteChick",
+      "birdPunk",
+      "birdPinkStripes",
+      "birdBlueHat",
+      "birdBlue"
+    ],
+    initialTargetAmount: 10,
+    spawnNew: true,
+    instructionsText: "Shoot all birds!",
+    bombs: 100
   }
 ];
 

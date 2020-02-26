@@ -62,7 +62,7 @@ class Bird {
   setBirdScale = () => {
     if (window.innerWidth <= 768) {
       this.pixiObj.scale.set(
-        Math.random() * 0.4 + (window.innerWidth / 1000) * 0.55
+        Math.random() * 0.1 + (window.innerWidth / 1000) * 1.1
       );
     } else {
       this.pixiObj.scale.set(
@@ -72,13 +72,14 @@ class Bird {
   };
 
   setBirdSpeed = () => {
-    let speedFactor = 3;
+    let speedFactor = 3 * this.setup.BS;
     if (window.innerWidth <= 768) {
-      speedFactor = 0;
+      speedFactor = 0.35 * this.setup.BS;
     }
+
     this.speed = this.texturesSetup[this.textureInit]
       ? Math.random() * speedFactor + this.texturesSetup[this.textureInit].speed
-      : Math.random() * speedFactor + 1;
+      : this.texturesSetup[this.textureInit].speed;
   };
 
   addBird = () => {
@@ -147,18 +148,18 @@ class Bird {
       if (this.pixiObj.x - this.pixiObj.width / 2 >= window.innerWidth) {
         this.directions.x = false;
         this.setInitialPositionY();
-        this.pixiObj.scale.x *= -1;
       } else if (
         this.pixiObj.x - this.pixiObj.width / 2 <=
         0 - this.pixiObj.width
       ) {
         this.directions.x = true;
         this.setInitialPositionY();
-        this.pixiObj.scale.x *= -1;
       }
       if (this.directions.x) {
+        this.pixiObj.scale.x = this.pixiObj.scale.y;
         this.pixiObj.x += this.speed;
       } else {
+        this.pixiObj.scale.x = this.pixiObj.scale.y * -1;
         this.pixiObj.x -= this.speed;
       }
 

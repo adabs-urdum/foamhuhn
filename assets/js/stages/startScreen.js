@@ -31,7 +31,7 @@ class startScreen {
     }
 
     let welcomeText = new PIXI.Text(text, {
-      fontFamily: "Sedgwick Ave Display",
+      fontFamily: this.setup.fontFamily,
       fontSize: 200 * this.setup.BS,
       fill: 0x3d5061
     });
@@ -52,7 +52,7 @@ class startScreen {
         return (
           this.welcomeText.position.y +
           this.welcomeText.height / 2 +
-          this.setup.BS * 100
+          this.setup.BS * 175
         );
       },
       onClick: e => {

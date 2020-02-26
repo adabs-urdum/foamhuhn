@@ -47,11 +47,16 @@ class Level {
       setup.spawnedTargets += 1;
       target._id = setup.spawnedTargets;
       setup.stage.addChildAt(target.pixiObj, 1);
+      setup.sendToBack(target.pixiObj);
     });
 
     setup.bombs.map(target => {
       setup.stage.addChildAt(target.pixiObj, 1);
     });
+
+    if (setup.backgroundImage) {
+      setup.sendToBack(setup.backgroundImage);
+    }
 
     this.showLevelMessage();
     this.showLevelInstructions();
@@ -78,7 +83,7 @@ class Level {
   setLevelInstructionsPosition = () => {
     this.levelInstructions.anchor.x = 0;
     this.levelInstructions.position.x = this.setup.BS * 80;
-    this.levelInstructions.position.y = (window.innerHeight / 8) * 6.9;
+    this.levelInstructions.position.y = (window.innerHeight / 8) * 6.6;
     this.levelInstructions.style.fontSize =
       50 * this.setup.BS * this.mobileFactor;
     this.setup.bringToFront(this.levelInstructions);
@@ -148,7 +153,7 @@ class Level {
   };
 
   startSpawnInterval = () => {
-    this.spawnInterval = setInterval(() => {
+    this.setup.spawnInterval = setInterval(() => {
       const target = new Bird(
         this.setup,
         this.config.targetTypes.getRandomValue(this.config.targetTypes)
@@ -160,13 +165,11 @@ class Level {
       this.setup.spawnedTargets += 1;
       target._id = this.setup.spawnedTargets;
       this.setup.targets.push(target);
-    }, 2000);
-    this.setup.spawnInterval = this.spawnInterval;
+    }, 3500);
   };
 
   stopSpawnInterval = () => {
-    this.spawnInterval = clearInterval(this.spawnInterval);
-    this.setup.spawnInterval = this.spawnInterval;
+    clearInterval(this.setup.spawnInterval);
   };
 
   updateLevel = () => {
@@ -184,15 +187,17 @@ class Level {
         (this.config.goals.length &&
           this.setup.successfulShots >= this.config.goalTotalTargets)
       ) {
-        clearInterval(this.spawnInterval);
-
         const button = new Button(this.setup, {
           text: "next",
           getX: () => {
             return window.innerWidth / 2;
           },
           getY: () => {
-            return this.levelMessage.position.y + this.levelMessage.height;
+            return (
+              this.levelMessage.position.y +
+              this.levelMessage.height +
+              this.setup.BS * 175
+            );
           },
           onClick: e => {
             this.setup.debugLog("clicked button");
@@ -220,10 +225,12 @@ class Level {
         });
         this.showLevelEndMessage();
         this.levelEnded = true;
+        this.stopSpawnInterval();
         this.setup.debugLog("level end");
         this.setup.debugLog("---");
       }
     } else {
+      this.stopSpawnInterval();
       this.setup.targets = [];
       this.setup.bombs = [];
     }

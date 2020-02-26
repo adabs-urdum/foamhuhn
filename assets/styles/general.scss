@@ -1,5 +1,5 @@
 html {
-  font-family: "Sedgwick Ave Display", sans-serif;
+  font-family: "Schoolbell", sans-serif;
   font-weight: 200;
   font-size: #{$BaseRemSize}px;
   line-height: 130%;
@@ -37,10 +37,12 @@ h2 {
 
 h3 {
   @include bs-font-size(55);
+  margin-bottom: $BS * 20;
 }
 
 h4 {
   @include bs-font-size(45);
+  margin-bottom: 0;
 }
 
 h5,
@@ -89,7 +91,46 @@ canvas {
   display: none;
 }
 
-@media #{BreakpointS} {
+@media #{$BreakpointS} {
+
+  body {
+    @include bs-font-size(100);
+    line-height: 130%;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    line-height: 120%;
+  }
+
+  h1 {
+    @include bs-font-size(170);
+    margin-bottom: $BS * 50;
+  }
+
+  h2 {
+    @include bs-font-size(155);
+    margin-bottom: $BS * 40;
+  }
+
+  h3 {
+    @include bs-font-size(140);
+    margin-bottom: $BS * 40;
+  }
+
+  h4 {
+    @include bs-font-size(120);
+  }
+
+  h5,
+  h6 {
+    @include bs-font-size(100);
+  }
+
   .mobile_only {
     display: block;
   }

@@ -15,20 +15,27 @@ Array.prototype.getRandomValue = inputArray => {
 };
 
 document.addEventListener("DOMContentLoaded", function() {
+  const fontFamily = "Schoolbell";
   const infoOverlay = document.getElementById("infoOverlay");
   const infoOverlayTrigger = document.getElementById("infoOverlayTrigger");
   infoOverlayTrigger.addEventListener("click", () => {
     infoOverlay.classList.toggle("infoOverlay--active");
+    if (infoOverlay.classList.contains("infoOverlay--active")) {
+      infoOverlayTrigger.classList.add("infoOverlay__trigger--active");
+    } else {
+      infoOverlayTrigger.classList.remove("infoOverlay__trigger--active");
+    }
   });
 
-  const debug = true;
+  const debug = false;
   const setup = {
-    fontFamily: "Sedgwick Ave Display",
+    fontFamily: fontFamily,
     gameStarted: false,
     messageDuration: 1000,
     windowRatio: window.innerWidth / window.innerHeight,
     designWidth: 1920,
     BS: window.innerWidth / 1920,
+    backgroundImage: null,
     renderer: null,
     stage: null,
     loader: null,
@@ -54,7 +61,10 @@ document.addEventListener("DOMContentLoaded", function() {
       "level-4",
       "level-5",
       "level-6",
-      "level-7"
+      "level-7",
+      "level-8",
+      "level-9",
+      "level-10"
     ],
     currentStageId: "start",
     bringToFront: obj => {
@@ -146,6 +156,7 @@ document.addEventListener("DOMContentLoaded", function() {
       this.landscape = landscape;
       this.setBackgroundPosition();
       setup.stage.addChildAt(this.landscape, 0);
+      setup.backgroundImage = this.landscape;
     };
 
     setBackgroundFrontPosition = () => {
@@ -268,6 +279,10 @@ document.addEventListener("DOMContentLoaded", function() {
         if (setup.currentStageId == "start") {
           this.resetStage();
           setup.currentStage = new StartScreen(setup);
+          if (setup.gameStarted) {
+            infoOverlay.classList.toggle("infoOverlay--active");
+            infoOverlayTrigger.classList.add("infoOverlay__trigger--active");
+          }
           setup.gameStarted = true;
         } else if (setup.currentStageId.indexOf("level") != -1) {
           const levelNumber = setup.currentStageId.split("-").slice(-1) - 1;
@@ -300,7 +315,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // multiple fonts can be passed here
     google: {
-      families: ["Sedgwick Ave Display"]
+      families: [fontFamily]
     }
   });
 });
