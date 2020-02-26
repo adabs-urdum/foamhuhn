@@ -29,8 +29,20 @@ class Bird {
       birdGreenBlack: {
         speed: 3
       },
+      birdPinkStripes: {
+        speed: 4
+      },
+      birdBlueHat: {
+        speed: 5
+      },
+      birdPunk: {
+        speed: 6
+      },
+      birdBlue: {
+        speed: 8
+      },
       birdWhiteChick: {
-        speed: 12
+        speed: 10
       }
     };
 
@@ -64,8 +76,9 @@ class Bird {
     if (window.innerWidth <= 768) {
       speedFactor = 0;
     }
-    this.speed =
-      Math.random() * speedFactor + this.texturesSetup[this.textureInit].speed;
+    this.speed = this.texturesSetup[this.textureInit]
+      ? Math.random() * speedFactor + this.texturesSetup[this.textureInit].speed
+      : Math.random() * speedFactor + 1;
   };
 
   addBird = () => {
@@ -104,7 +117,6 @@ class Bird {
     pixiObj.anchor.y = 0.5;
 
     pixiObj.interactive = true;
-    pixiObj.buttonMode = true;
     pixiObj.click = this.onClick;
     pixiObj.tap = this.onClick;
 

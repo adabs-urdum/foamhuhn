@@ -103,7 +103,7 @@ class Level {
 
   showLevelMessage = () => {
     this.setup.debugLog("showLevelMessage");
-    this.levelMessage = new PIXI.Text(this.setup.currentStageId.toUpperCase(), {
+    this.levelMessage = new PIXI.Text(this.config.id.toUpperCase(), {
       fontFamily: this.setup.fontFamily,
       fontSize: 150 * this.setup.BS * this.mobileFactor,
       fill: 0x000000

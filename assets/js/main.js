@@ -53,9 +53,10 @@ document.addEventListener("DOMContentLoaded", function() {
       "level-3",
       "level-4",
       "level-5",
-      "level-6"
+      "level-6",
+      "level-7"
     ],
-    currentStageId: "start",
+    currentStageId: "level-7",
     bringToFront: obj => {
       if (obj) {
         const parent = obj.parent;
@@ -63,6 +64,18 @@ document.addEventListener("DOMContentLoaded", function() {
           parent.removeChild(obj);
           parent.addChild(obj);
         }
+      }
+    },
+    sendToBack: (obj, parent) => {
+      const parentObj = parent || obj.parent || { children: false };
+      if (parentObj.children) {
+        for (var keyIndex in obj.parent.children) {
+          if (obj.parent.children[keyIndex] === obj) {
+            obj.parent.children.splice(keyIndex, 1);
+            break;
+          }
+        }
+        parentObj.children.splice(0, 0, obj);
       }
     },
     debugLog: str => {
@@ -219,6 +232,10 @@ document.addEventListener("DOMContentLoaded", function() {
         .add("birdPink", "./dist/img/birds/spreadFly3.png")
         .add("birdGreenBlack", "./dist/img/birds/spreadFly4.png")
         .add("birdWhiteChick", "./dist/img/birds/spreadFly5.png")
+        .add("birdPunk", "./dist/img/birds/spreadFly6.png")
+        .add("birdPinkStripes", "./dist/img/birds/spreadFly7.png")
+        .add("birdBlueHat", "./dist/img/birds/spreadFly8.png")
+        .add("birdBlue", "./dist/img/birds/spreadFly9.png")
         .add("bomb", "./dist/img/traps/bomb.png")
         .add("crossHair", "./dist/img/crossHair.png")
         .load();
@@ -228,7 +245,11 @@ document.addEventListener("DOMContentLoaded", function() {
         "birdYellow",
         "birdPink",
         "birdGreenBlack",
-        "birdWhiteChick"
+        "birdWhiteChick",
+        "birdPunk",
+        "birdPinkStripes",
+        "birdBlueHat",
+        "birdBlue"
       ];
 
       // throughout the process multiple signals can be dispatched.
@@ -251,21 +272,31 @@ document.addEventListener("DOMContentLoaded", function() {
         } else if (setup.currentStageId == "level-1") {
           this.resetStage();
           setup.currentStage = new Level(setup, levels[0]);
+          setup.gameStarted = true;
         } else if (setup.currentStageId == "level-2") {
           this.resetStage();
           setup.currentStage = new Level(setup, levels[1]);
+          setup.gameStarted = true;
         } else if (setup.currentStageId == "level-3") {
           this.resetStage();
           setup.currentStage = new Level(setup, levels[2]);
+          setup.gameStarted = true;
         } else if (setup.currentStageId == "level-4") {
           this.resetStage();
           setup.currentStage = new Level(setup, levels[3]);
+          setup.gameStarted = true;
         } else if (setup.currentStageId == "level-5") {
           this.resetStage();
           setup.currentStage = new Level(setup, levels[4]);
+          setup.gameStarted = true;
         } else if (setup.currentStageId == "level-6") {
           this.resetStage();
           setup.currentStage = new Level(setup, levels[5]);
+          setup.gameStarted = true;
+        } else if (setup.currentStageId == "level-7") {
+          this.resetStage();
+          setup.currentStage = new Level(setup, levels[6]);
+          setup.gameStarted = true;
         }
 
         setup.currentStageChanged = false;

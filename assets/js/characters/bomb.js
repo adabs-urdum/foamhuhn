@@ -6,14 +6,14 @@ class Bomb {
     this.ranDetonation = false;
     this.detonated = false;
     this.speed = Math.random() * 3 + 2;
+    this.mobileFactor = window.innerWidth <= 768 ? 0.75 : 1;
     this.directions = {
       x: 1,
       y: 1
     };
     this.texture = setup.loader.resources["bomb"].texture.clone();
     this.pixiObj = new PIXI.Sprite(this.texture);
-    this.pixiObj.scale.x = 0.5;
-    this.pixiObj.scale.y = 0.5;
+    this.setScale();
     this.pixiObj.interactive = true;
     this.pixiObj.click = this.detonate;
     const singleFrameWidth = 197;
@@ -38,7 +38,22 @@ class Bomb {
     this.texture.frame = this.frames[0];
     this.setInitialPositionY();
     this.setInitialPositionX();
+    this.bindEvents();
   }
+
+  bindEvents = () => {
+    window.addEventListener("resize", this.onWindowResize);
+  };
+
+  onWindowResize = () => {
+    this.mobileFactor = window.innerWidth <= 768 ? 0.75 : 1;
+    this.setScale();
+  };
+
+  setScale = () => {
+    this.pixiObj.scale.x = 0.5 * this.mobileFactor;
+    this.pixiObj.scale.y = 0.5 * this.mobileFactor;
+  };
 
   detonate = () => {
     this.detonated = true;

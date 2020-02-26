@@ -22,7 +22,6 @@ class button {
     this.box = box;
     this.setSizeAndPositionBox();
     box.interactive = true;
-    box.buttonMode = true;
     box.click = buttonTextSetup.onClick;
     box.tap = buttonTextSetup.onClick;
     box.mouseover = this.onMouseOver;
@@ -34,6 +33,7 @@ class button {
     setup.stage.addChildAt(container, 2);
 
     this.bindEvents();
+    setup.bringToFront(container);
   }
 
   bindEvents = () => {
