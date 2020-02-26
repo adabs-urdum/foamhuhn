@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function() {
       "level-6",
       "level-7"
     ],
-    currentStageId: "level-7",
+    currentStageId: "start",
     bringToFront: obj => {
       if (obj) {
         const parent = obj.parent;
@@ -269,36 +269,12 @@ document.addEventListener("DOMContentLoaded", function() {
           this.resetStage();
           setup.currentStage = new StartScreen(setup);
           setup.gameStarted = true;
-        } else if (setup.currentStageId == "level-1") {
+        } else if (setup.currentStageId.indexOf("level") != -1) {
+          const levelNumber = setup.currentStageId.split("-").slice(-1) - 1;
           this.resetStage();
-          setup.currentStage = new Level(setup, levels[0]);
-          setup.gameStarted = true;
-        } else if (setup.currentStageId == "level-2") {
-          this.resetStage();
-          setup.currentStage = new Level(setup, levels[1]);
-          setup.gameStarted = true;
-        } else if (setup.currentStageId == "level-3") {
-          this.resetStage();
-          setup.currentStage = new Level(setup, levels[2]);
-          setup.gameStarted = true;
-        } else if (setup.currentStageId == "level-4") {
-          this.resetStage();
-          setup.currentStage = new Level(setup, levels[3]);
-          setup.gameStarted = true;
-        } else if (setup.currentStageId == "level-5") {
-          this.resetStage();
-          setup.currentStage = new Level(setup, levels[4]);
-          setup.gameStarted = true;
-        } else if (setup.currentStageId == "level-6") {
-          this.resetStage();
-          setup.currentStage = new Level(setup, levels[5]);
-          setup.gameStarted = true;
-        } else if (setup.currentStageId == "level-7") {
-          this.resetStage();
-          setup.currentStage = new Level(setup, levels[6]);
+          setup.currentStage = new Level(setup, levels[levelNumber]);
           setup.gameStarted = true;
         }
-
         setup.currentStageChanged = false;
       } else {
         if (setup.currentStageId.indexOf("level") >= 0) {
